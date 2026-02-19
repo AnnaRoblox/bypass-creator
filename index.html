@@ -3,24 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnnaRoblox's bypass creator</title>
+    <title>AnnaRoblox's Bypass Creator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            background-color: #1a1a1a;
-            color: #e5e5e5;
-        }
-        .canvas-container {
-            position: relative;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-            border-radius: 0.75rem;
-            overflow: hidden;
-        }
-        /* Background Presets */
+        body { background-color: #1a1a1a; color: #e5e5e5; }
+        .canvas-container { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.5); border-radius: 0.75rem; overflow: hidden; }
         .bg-transparent-grid {
-            background-image: linear-gradient(45deg, #2a2a2a 25%, transparent 25%), 
-                              linear-gradient(-45deg, #2a2a2a 25%, transparent 25%), 
-                              linear-gradient(45deg, transparent 75%, #2a2a2a 75%), 
+            background-image: linear-gradient(45deg, #2a2a2a 25%, transparent 25%),
+                              linear-gradient(-45deg, #2a2a2a 25%, transparent 25%),
+                              linear-gradient(45deg, transparent 75%, #2a2a2a 75%),
                               linear-gradient(-45deg, transparent 75%, #2a2a2a 75%);
             background-size: 20px 20px;
             background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
@@ -28,90 +19,124 @@
         }
         .bg-preset-black { background-color: #000000; background-image: none; }
         .bg-preset-white { background-color: #ffffff; background-image: none; }
-        .bg-preset-grey { background-color: rgb(128, 128, 128); background-image: none; }
-
+        .bg-preset-grey { background-color: rgb(128,128,128); background-image: none; }
         input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 18px;
-            width: 18px;
-            border-radius: 50%;
-            background: #60a5fa;
-            cursor: pointer;
-            border: 2px solid #1e40af;
+            -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%;
+            background: #60a5fa; cursor: pointer; border: 2px solid #1e40af;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-8 px-4 font-sans">
-
     <div class="w-full max-w-4xl space-y-8">
-        <!-- Header -->
+
         <div class="text-center space-y-2">
             <h1 class="text-3xl font-bold text-blue-400">AnnaRoblox's Bypass Creator</h1>
-            <p class="text-gray-400 text-sm"><b>Multi-step automated bypass with Dynamic Exclusion</p></b>
-            <p class="text-white-400 text-sm">works with decals and t-shirts</p>
+            <p class="text-gray-400 text-sm"><b>Multi-step automated bypass with Dynamic Exclusion</b></p>
+            <p class="text-gray-400 text-sm">works with decals and t-shirts</p>
         </div>
 
-        <!-- Controls -->
         <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-xl space-y-6">
-            
-            <!-- File Upload -->
-            <div class="flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded-lg p-6 hover:border-blue-400 transition-colors cursor-pointer group" id="dropZone">
+
+            <!-- Main Upload -->
+            <div id="dropZoneMain" class="flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded-lg p-6 hover:border-blue-400 transition-colors cursor-pointer group">
                 <input type="file" id="imageInput" accept="image/*" class="hidden">
                 <div class="text-center pointer-events-none group-hover:scale-105 transition-transform duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto text-gray-400 mb-2 group-hover:text-blue-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="h-10 w-10 mx-auto text-gray-400 mb-2 group-hover:text-blue-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <p class="text-sm text-gray-300">Click to upload, drag and drop, or <span class="text-blue-400 font-bold">Paste (Ctrl+V)</span></p>
+                    <p class="text-sm text-gray-300">Main image — click / drag / paste</p>
                 </div>
             </div>
 
-            <!-- Global Exclusion Control -->
+            <!-- Bait Section with new controls -->
+            <div class="bg-gray-900/60 p-5 rounded-lg border border-gray-600 space-y-5">
+                <h3 class="font-semibold text-purple-300 text-lg">Bait Layer</h3>
+
+                <div id="dropZoneBait" class="flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded-lg p-5 hover:border-purple-400 transition-colors cursor-pointer group">
+                    <input type="file" id="baitInput" accept="image/*" class="hidden">
+                    <div class="text-center pointer-events-none group-hover:scale-105 transition-transform duration-200">
+                        <svg class="h-8 w-8 mx-auto text-gray-400 mb-2 group-hover:text-purple-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        <p class="text-sm text-gray-300">Bait image (optional)</p>
+                    </div>
+                </div>
+
+                <!-- Bait Mode & Options -->
+                <div class="flex flex-wrap gap-6 items-center justify-center">
+                    <div class="space-x-4">
+                        <label><input type="radio" name="baitMode" value="none" checked> None</label>
+                        <label><input type="radio" name="baitMode" value="normal"> Normal (bottom)</label>
+                        <label><input type="radio" name="baitMode" value="new"> top bait (top masked)</label>
+                    </div>
+                    <div id="newBaitOptions" class="hidden space-x-4 items-center">
+                        <span class="text-sm text-gray-300">BG:</span>
+                        <label><input type="radio" name="newBaitBg" value="black" checked> Black</label>
+                        <label><input type="radio" name="newBaitBg" value="white"> White</label>
+                    </div>
+                </div>
+
+                <!-- top bait Controls -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-3 border-t border-gray-700">
+                    <!-- Bait Opacity -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>Bait Opacity</span>
+                            <span id="baitOpacityVal">100%</span>
+                        </div>
+                        <input type="range" id="baitOpacity" min="0" max="100" value="100" class="w-full">
+                    </div>
+
+                    <!-- Clear Bait -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-sm">
+                            <input type="checkbox" id="clearBaitToggle">
+                            Clear Bait (grayscale + clear on color)
+                        </label>
+                        <div id="clearBaitOptions" class="hidden flex gap-4 items-center text-sm">
+                            <span>Clear on:</span>
+                            <label><input type="radio" name="clearBaitColor" value="black" checked> Black</label>
+                            <label><input type="radio" name="clearBaitColor" value="white"> White</label>
+                        </div>
+                    </div>
+
+                    <!-- Create Bait -->
+                    <div class="space-y-2 col-span-full">
+                        <label class="flex items-center gap-2 text-sm">
+                            <input type="checkbox" id="createBaitToggle">
+                            Create Bait (make compatible - contrast/edge enhancement)
+                        </label>
+                        <div id="createBaitNote" class="hidden text-xs text-gray-400 italic">
+                            Applies contrast boost and simple edge detection before using as bait
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exclusion & Sliders -->
             <div class="bg-gray-900/40 p-4 rounded-lg border border-gray-700/50 space-y-3">
                 <div class="flex justify-between items-center">
-                    <h3 class="font-semibold text-blue-300">Global Exclusion Value</h3>
+                    <h3 class="font-semibold text-blue-300">Exclusion Value</h3>
                     <span id="exclValDisplay" class="text-xs bg-blue-900 text-blue-200 px-2 py-1 rounded">112, 112, 112</span>
                 </div>
-                <input type="range" id="exclSlider" min="0" max="255" value="112" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
-                <p class="text-[10px] text-gray-500 italic">Adjusts the target color for the internal Exclusion blend steps.</p>
+                <input type="range" id="exclSlider" min="0" max="255" value="112" class="w-full">
             </div>
 
-            <!-- Sliders -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-                <!-- Top Layer Controls -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h3 class="font-semibold text-white">Top Layer (White Clear)</h3>
-                        <span id="topVal" class="text-xs bg-blue-900 text-blue-200 px-2 py-1 rounded">100%</span>
-                    </div>
-                    <input type="range" id="topOpacity" min="0" max="100" value="100" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
-                    <div class="text-xs text-gray-500 space-y-1 bg-gray-900/50 p-2 rounded">
-                        <p>1. Clear White</p>
-                        <p>2. Exclusion (Manual)</p>
-                        <p>3. Clear White</p>
-                        <p>4. Average (255, 255, 255)</p>
-                    </div>
+                    <div class="flex justify-between"><h3 class="font-semibold text-white">Top Layer</h3><span id="topVal">100%</span></div>
+                    <input type="range" id="topOpacity" min="0" max="100" value="100" class="w-full">
                 </div>
-
-                <!-- Bottom Layer Controls -->
                 <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h3 class="font-semibold text-white">Bottom Layer (Black Clear)</h3>
-                        <span id="btmVal" class="text-xs bg-blue-900 text-blue-200 px-2 py-1 rounded">100%</span>
-                    </div>
-                    <input type="range" id="btmOpacity" min="0" max="100" value="100" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
-                    <div class="text-xs text-gray-500 space-y-1 bg-gray-900/50 p-2 rounded">
-                        <p>1. Clear Black</p>
-                        <p>2. Exclusion (Manual)</p>
-                        <p>3. Clear Black</p>
-                        <p>4. Multiply (128, 128, 128)</p>
-                    </div>
+                    <div class="flex justify-between"><h3 class="font-semibold text-white">Bottom Layer</h3><span id="btmVal">100%</span></div>
+                    <input type="range" id="btmOpacity" min="0" max="100" value="100" class="w-full">
                 </div>
             </div>
 
-            <div id="status" class="hidden text-center text-yellow-400 text-sm font-mono animate-pulse">Processing...</div>
+            <div id="status" class="hidden text-center text-yellow-400 animate-pulse">Processing...</div>
         </div>
 
-        <!-- Canvas Display Area -->
+        <!-- Canvas -->
         <div class="space-y-4">
             <div class="flex justify-center bg-gray-900 p-4 rounded-xl border border-gray-800 overflow-auto">
                 <div id="canvasWrapper" class="canvas-container bg-transparent-grid">
@@ -119,310 +144,439 @@
                 </div>
             </div>
 
-            <!-- Preset Toggles -->
             <div class="flex flex-col items-center space-y-3">
-                <span class="text-sm font-medium text-gray-400">Preview Background Presets</span>
+                <span class="text-sm text-gray-400">Preview Background</span>
                 <div class="flex space-x-2 bg-gray-800 p-1 rounded-lg border border-gray-700">
-                    <button onclick="setBg('transparent-grid')" class="px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors bg-gray-700 text-white" data-preset="transparent-grid">Transparent</button>
-                    <button onclick="setBg('preset-black')" class="px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors text-gray-300" data-preset="preset-black">Black</button>
-                    <button onclick="setBg('preset-white')" class="px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors text-gray-300" data-preset="preset-white">White</button>
-                    <button onclick="setBg('preset-grey')" class="px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors text-gray-300" data-preset="preset-grey">Grey (128)</button>
+                    <button onclick="setBg('transparent-grid')" data-preset="transparent-grid" class="px-4 py-2 rounded-md bg-gray-700 text-white">Transparent</button>
+                    <button onclick="setBg('preset-black')" data-preset="preset-black" class="px-4 py-2 rounded-md text-gray-300">Black</button>
+                    <button onclick="setBg('preset-white')" data-preset="preset-white" class="px-4 py-2 rounded-md text-gray-300">White</button>
+                    <button onclick="setBg('preset-grey')" data-preset="preset-grey" class="px-4 py-2 rounded-md text-gray-300">Grey</button>
                 </div>
             </div>
-        </div>
-        
-        <div class="text-center">
-             <button id="downloadBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95">
-                Download Flattened Result
-            </button>
+
+            <div class="text-center">
+                <button id="downloadBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg disabled:opacity-50" disabled>Download</button>
+            </div>
         </div>
     </div>
-   <p class="text-white-400 text-sm"><b>you can manually add bait yourself if needed</p></b>
+
     <script>
-        // --- LOGIC PORTED FROM my paint.net C# plugin ---
+    // ─── Core functions  ───
+    function minimumAlpha(Cc, Cb) {
+        if (Cc === Cb) return 0;
+        if (Cc > Cb) return Math.floor((255 * (Cc - Cb) - 1) / (255 - Cb) + 1);
+        return Math.floor(255 * (Cb - Cc - 1) / Cb + 1);
+    }
 
-        function minimumAlpha(Cc, Cb) {
-            if (Cc === Cb) return 0;
-            else if (Cc > Cb)
-                return Math.floor((255 * (Cc - Cb) - 1) / (255 - Cb) + 1);
-            else
-                return Math.floor(255 * (Cb - Cc - 1) / Cb + 1);
-        }
+    function adjustForAlpha(Af, Cc, Cb, Cm) {
+        if (Af === 0) return Cm;
+        let T = 255 * (Cc - Cb) - Af * (Cm - Cb);
+        if (T <= -255) Cm += Math.floor((T + 255) / Af - 1);
+        else if (T > 0) Cm += Math.floor((T - 1) / Af + 1);
+        return Math.min(255, Math.max(0, Cm));
+    }
 
-        function adjustForAlpha(Af, Cc, Cb, Cm) {
-            if (Af === 0) return Cm;
-            let T = 255 * (Cc - Cb) - Af * (Cm - Cb);
-            if (T <= -255)
-                Cm += Math.floor((T + 255) / Af - 1);
-            else if (T > 0)
-                Cm += Math.floor((T - 1) / Af + 1);
-            return Math.min(255, Math.max(0, Cm));
-        }
-
-        function applyClearColor(width, height, srcData, clearRb, clearGb, clearBb) {
-            const output = new Uint8ClampedArray(srcData.length);
-            const sRb = 255 * clearRb;
-            const sGb = 255 * clearGb;
-            const sBb = 255 * clearBb;
-
-            for (let i = 0; i < srcData.length; i += 4) {
-                const Rf = srcData[i];
-                const Gf = srcData[i+1];
-                const Bf = srcData[i+2];
-                const Af = srcData[i+3];
-
-                if (Af === 0) {
-                    output[i] = Rf; output[i+1] = Gf; output[i+2] = Bf; output[i+3] = 0;
-                    continue;
-                }
-
-                let Rc, Gc, Bc;
-                if (Af === 255) {
-                    Rc = Rf; Gc = Gf; Bc = Bf;
-                } else {
-                    Rc = Math.floor((sRb + Af * (Rf - clearRb)) / 255);
-                    Gc = Math.floor((sGb + Af * (Gf - clearGb)) / 255);
-                    Bc = Math.floor((sBb + Af * (Bf - clearBb)) / 255);
-                }
-
-                let Ac = minimumAlpha(Rc, clearRb);
-                Ac = Math.max(Ac, minimumAlpha(Gc, clearGb));
-                Ac = Math.max(Ac, minimumAlpha(Bc, clearBb));
-
-                if (Ac === 0) {
-                    output[i] = Rf; output[i+1] = Gf; output[i+2] = Bf; output[i+3] = 0;
-                } else {
-                    output[i] = adjustForAlpha(Ac, Rc, clearRb, Rf);
-                    output[i+1] = adjustForAlpha(Ac, Gc, clearGb, Gf);
-                    output[i+2] = adjustForAlpha(Ac, Bc, clearBb, Bf);
-                    output[i+3] = Ac;
-                }
+    function applyClearColor(width, height, srcData, clearR, clearG, clearB) {
+        const output = new Uint8ClampedArray(srcData.length);
+        const sR = 255 * clearR, sG = 255 * clearG, sB = 255 * clearB;
+        for (let i = 0; i < srcData.length; i += 4) {
+            const R = srcData[i], G = srcData[i+1], B = srcData[i+2], A = srcData[i+3];
+            if (A === 0) { output.set([R,G,B,0], i); continue; }
+            let Rc = A === 255 ? R : Math.floor((sR + A * (R - clearR)) / 255);
+            let Gc = A === 255 ? G : Math.floor((sG + A * (G - clearG)) / 255);
+            let Bc = A === 255 ? B : Math.floor((sB + A * (B - clearB)) / 255);
+            let Ac = Math.max(minimumAlpha(Rc, clearR), minimumAlpha(Gc, clearG), minimumAlpha(Bc, clearB));
+            if (Ac === 0) { output.set([R,G,B,0], i); }
+            else {
+                output[i]   = adjustForAlpha(Ac, Rc, clearR, R);
+                output[i+1] = adjustForAlpha(Ac, Gc, clearG, G);
+                output[i+2] = adjustForAlpha(Ac, Bc, clearB, B);
+                output[i+3] = Ac;
             }
-            return output;
         }
+        return output;
+    }
 
-        function applyBlend(srcData, blendR, blendG, blendB, mode) {
-            const output = new Uint8ClampedArray(srcData.length);
-            for (let i = 0; i < srcData.length; i += 4) {
-                const srcR = srcData[i];
-                const srcG = srcData[i+1];
-                const srcB = srcData[i+2];
-                const srcA = srcData[i+3];
-
-                let dstR, dstG, dstB;
-                switch (mode) {
-                    case 'exclusion':
-                        dstR = srcR + blendR - (2 * srcR * blendR) / 255;
-                        dstG = srcG + blendG - (2 * srcG * blendG) / 255;
-                        dstB = srcB + blendB - (2 * srcB * blendB) / 255;
-                        break;
-                    case 'average':
-                        dstR = (srcR + blendR) / 2;
-                        dstG = (srcG + blendG) / 2;
-                        dstB = (srcB + blendB) / 2;
-                        break;
-                    case 'multiply':
-                        dstR = (srcR * blendR) / 255;
-                        dstG = (srcG * blendG) / 255;
-                        dstB = (srcB * blendB) / 255;
-                        break;
-                    default:
-                        dstR = srcR; dstG = srcG; dstB = srcB;
-                }
-                output[i] = Math.min(255, Math.max(0, dstR));
-                output[i+1] = Math.min(255, Math.max(0, dstG));
-                output[i+2] = Math.min(255, Math.max(0, dstB));
-                output[i+3] = srcA;
-            }
-            return output;
-        }
-
-        // --- APPLICATION LOGIC ---
-
-        const imageInput = document.getElementById('imageInput');
-        const dropZone = document.getElementById('dropZone');
-        const canvas = document.getElementById('mainCanvas');
-        const ctx = canvas.getContext('2d');
-        const statusEl = document.getElementById('status');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const canvasWrapper = document.getElementById('canvasWrapper');
-        
-        const topOpacitySlider = document.getElementById('topOpacity');
-        const btmOpacitySlider = document.getElementById('btmOpacity');
-        const exclSlider = document.getElementById('exclSlider');
-        
-        const topVal = document.getElementById('topVal');
-        const btmVal = document.getElementById('btmVal');
-        const exclValDisplay = document.getElementById('exclValDisplay');
-
-        let originalImageData = null;
-        let topLayerProcessed = null;
-        let btmLayerProcessed = null;
-        let currentWidth = 0;
-        let currentHeight = 0;
-        let processTimeout = null;
-
-        // Background Preset Logic
-        window.setBg = function(preset) {
-            canvasWrapper.className = 'canvas-container bg-' + preset;
-            document.querySelectorAll('[data-preset]').forEach(btn => {
-                if (btn.getAttribute('data-preset') === preset) {
-                    btn.classList.add('bg-gray-700', 'text-white');
-                    btn.classList.remove('text-gray-300');
-                } else {
-                    btn.classList.remove('bg-gray-700', 'text-white');
-                    btn.classList.add('text-gray-300');
-                }
-            });
-        };
-
-        // --- PASTE SUPPORT ---
-        window.addEventListener('paste', (e) => {
-            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-            let blob = null;
-
-            for (let i = 0; i < items.length; i++) {
-                if (items[i].type.indexOf("image") === 0) {
-                    blob = items[i].getAsFile();
+    function applyBlend(srcData, blendR, blendG, blendB, mode) {
+        const output = new Uint8ClampedArray(srcData.length);
+        for (let i = 0; i < srcData.length; i += 4) {
+            const srcR = srcData[i], srcG = srcData[i+1], srcB = srcData[i+2], srcA = srcData[i+3];
+            let dstR, dstG, dstB;
+            switch (mode) {
+                case 'exclusion':
+                    dstR = srcR + blendR - (2 * srcR * blendR) / 255;
+                    dstG = srcG + blendG - (2 * srcG * blendG) / 255;
+                    dstB = srcB + blendB - (2 * srcB * blendB) / 255;
                     break;
-                }
+                case 'average':
+                    dstR = (srcR + blendR) / 2;
+                    dstG = (srcG + blendG) / 2;
+                    dstB = (srcB + blendB) / 2;
+                    break;
+                case 'multiply':
+                    dstR = (srcR * blendR) / 255;
+                    dstG = (srcG * blendG) / 255;
+                    dstB = (srcB * blendB) / 255;
+                    break;
+                default:
+                    dstR = srcR; dstG = srcG; dstB = srcB;
+            }
+            output[i]   = Math.min(255, Math.max(0, dstR));
+            output[i+1] = Math.min(255, Math.max(0, dstG));
+            output[i+2] = Math.min(255, Math.max(0, dstB));
+            output[i+3] = srcA;
+        }
+        return output;
+    }
+
+    function createMaskedBait(finalData, baitData, width, height, bgColor) {
+        const output = new Uint8ClampedArray(finalData.length);
+        const bg = bgColor === 'white' ? 255 : 0;
+        for (let i = 0; i < finalData.length; i += 4) {
+            const fA = finalData[i+3] / 255;
+            const compR = Math.round(finalData[i]   * fA + bg * (1 - fA));
+            const compG = Math.round(finalData[i+1] * fA + bg * (1 - fA));
+            const compB = Math.round(finalData[i+2] * fA + bg * (1 - fA));
+            if (baitData[i+3] > 0) {
+                output.set([compR, compG, compB, 255], i);
+            } else {
+                output.set([0,0,0,0], i);
+            }
+        }
+        return output;
+    }
+
+    // ─── Bait processing ───
+    function processBaitImage(rawData, w, h, clearEnabled, clearColor, createEnabled) {
+        let data = new Uint8ClampedArray(rawData);
+
+        if (createEnabled) {
+            // Contrast + brightness
+            for (let i = 0; i < data.length; i += 4) {
+                let gray = Math.round(0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
+                let contrast = 2.2;
+                let brightness = -40;
+                let adjusted = Math.round((gray - 128) * contrast + 128 + brightness);
+                adjusted = Math.max(0, Math.min(255, adjusted));
+                data[i] = data[i+1] = data[i+2] = adjusted;
             }
 
-            if (blob !== null) {
-                // Visual feedback
-                dropZone.classList.add('border-blue-400', 'bg-gray-700');
-                setTimeout(() => dropZone.classList.remove('border-blue-400', 'bg-gray-700'), 300);
-                
-                handleFile(blob);
-            }
-        });
-
-        // --- DRAG & DROP SUPPORT ---
-        dropZone.addEventListener('click', () => imageInput.click());
-        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-blue-400'); });
-        dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('border-blue-400'); });
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('border-blue-400');
-            if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
-        });
-        imageInput.addEventListener('change', (e) => {
-            if (e.target.files.length) handleFile(e.target.files[0]);
-        });
-
-        // Event listeners for sliders
-        topOpacitySlider.addEventListener('input', () => {
-            topVal.innerText = topOpacitySlider.value + '%';
-            renderComposite();
-        });
-        btmOpacitySlider.addEventListener('input', () => {
-            btmVal.innerText = btmOpacitySlider.value + '%';
-            renderComposite();
-        });
-
-        // Exclusion Slider triggers a full re-process because it's baked into the layers
-        exclSlider.addEventListener('input', () => {
-            const v = exclSlider.value;
-            exclValDisplay.innerText = `${v}, ${v}, ${v}`;
-            
-            // Debounce processing to keep UI smooth
-            if (processTimeout) clearTimeout(processTimeout);
-            processTimeout = setTimeout(() => {
-                if (originalImageData) {
-                    processPipeline(originalImageData);
+            // Edge enhancement (inverted)
+            const temp = new Uint8ClampedArray(data.length);
+            temp.set(data);
+            for (let y = 1; y < h-1; y++) {
+                for (let x = 1; x < w-1; x++) {
+                    const i = (y * w + x) * 4;
+                    const gx = -temp[(y-1)*w*4 + (x-1)*4] -2*temp[(y-1)*w*4 + x*4] -temp[(y-1)*w*4 + (x+1)*4] +
+                                temp[(y+1)*w*4 + (x-1)*4] +2*temp[(y+1)*w*4 + x*4] +temp[(y+1)*w*4 + (x+1)*4];
+                    const gy = -temp[(y-1)*w*4 + (x-1)*4] +temp[(y-1)*w*4 + (x+1)*4] +
+                               -2*temp[y*w*4 + (x-1)*4] +2*temp[y*w*4 + (x+1)*4] +
+                               -temp[(y+1)*w*4 + (x-1)*4] +temp[(y+1)*w*4 + (x+1)*4];
+                    const edge = Math.sqrt(gx*gx + gy*gy);
+                    const val = Math.max(0, Math.min(255, 255 - edge * 0.8));
+                    data[i] = data[i+1] = data[i+2] = val;
                 }
-            }, 100);
-        });
-        
-        downloadBtn.addEventListener('click', () => {
-            if(!canvas) return;
-            const link = document.createElement('a');
-            link.download = 'custom_exclusion_result.png';
-            link.href = canvas.toDataURL();
-            link.click();
-        });
+            }
+        }
 
-        function handleFile(file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const img = new Image();
-                img.onload = () => {
-                    setupAndProcess(img);
-                };
-                img.src = event.target.result;
+        if (clearEnabled) {
+            const target = clearColor === 'white' ? 255 : 0;
+            for (let i = 0; i < data.length; i += 4) {
+                const gray = Math.round(0.299*data[i] + 0.587*data[i+1] + 0.114*data[i+2]);
+                const dist = Math.abs(gray - target);
+                const alpha = Math.max(0, 255 - dist * 2.5);
+                data[i] = data[i+1] = data[i+2] = gray;
+                data[i+3] = alpha;
+            }
+        }
+
+        return data;
+    }
+
+    // ─── State ───
+    let originalImageData = null;
+    let topLayerProcessed = null;
+    let btmLayerProcessed = null;
+    let baitOriginalImage = null;
+    let baitImageData = null;
+    let currentWidth = 0;
+    let currentHeight = 0;
+
+    const canvas = document.getElementById('mainCanvas');
+    const ctx = canvas.getContext('2d');
+    const statusEl = document.getElementById('status');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    // ─── File handling ───
+    function handleFile(file, isBait = false) {
+        if (!file || !file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            const img = new Image();
+            img.onload = () => {
+                if (!isBait) {
+                    // Reset bait data before resize to prevent length mismatch
+                    baitImageData = null;
+
+                    currentWidth = canvas.width = img.width;
+                    currentHeight = canvas.height = img.height;
+
+                    ctx.clearRect(0, 0, currentWidth, currentHeight);
+                    ctx.drawImage(img, 0, 0);
+
+                    originalImageData = ctx.getImageData(0, 0, currentWidth, currentHeight);
+
+                    // Rebuild bait at new size if it exists
+                    if (baitOriginalImage) {
+                        updateBaitData();
+                    }
+
+                    processPipeline();
+                    downloadBtn.disabled = false;
+
+                    // Extra render after resize (fixes timing issues in some browsers)
+                    setTimeout(renderComposite, 50);
+                } else {
+                    baitOriginalImage = img;
+                    updateBaitData();
+                    renderComposite();
+                }
             };
-            reader.readAsDataURL(file);
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function updateBaitData() {
+        if (!baitOriginalImage || currentWidth <= 0 || currentHeight <= 0) {
+            baitImageData = null;
+            renderComposite();
+            return;
         }
 
-        function setupAndProcess(img) {
-            currentWidth = img.width;
-            currentHeight = img.height;
-            canvas.width = currentWidth;
-            canvas.height = currentHeight;
+        const temp = document.createElement('canvas');
+        temp.width = currentWidth;
+        temp.height = currentHeight;
+        const tctx = temp.getContext('2d');
+        tctx.drawImage(baitOriginalImage, 0, 0, currentWidth, currentHeight);
 
-            ctx.drawImage(img, 0, 0);
-            originalImageData = ctx.getImageData(0, 0, currentWidth, currentHeight);
-            processPipeline(originalImageData);
+        const rawData = tctx.getImageData(0, 0, currentWidth, currentHeight).data;
+
+        const clearEnabled = document.getElementById('clearBaitToggle').checked;
+        const clearColor = document.querySelector('input[name="clearBaitColor"]:checked')?.value || 'black';
+        const createEnabled = document.getElementById('createBaitToggle').checked;
+
+        try {
+            baitImageData = processBaitImage(rawData, currentWidth, currentHeight, clearEnabled, clearColor, createEnabled);
+        } catch (err) {
+            console.error("Bait processing failed:", err);
+            baitImageData = null;
         }
 
-        async function processPipeline(imgData) {
-            statusEl.classList.remove('hidden');
-            statusEl.innerText = "Re-processing Layers...";
+        renderComposite();
+    }
 
-            const exclVal = parseInt(exclSlider.value);
-            
-            // Use setTimeout to allow UI to breathe
-            setTimeout(() => {
-                // --- TOP LAYER PIPELINE (WHITE FOCUS) ---
-                let t1 = applyClearColor(currentWidth, currentHeight, imgData.data, 255, 255, 255);
-                let t2 = applyBlend(t1, exclVal, exclVal, exclVal, 'exclusion');
-                let t3 = applyClearColor(currentWidth, currentHeight, t2, 255, 255, 255);
-                topLayerProcessed = applyBlend(t3, 255, 255, 255, 'average');
+    // ─── Processing pipeline ───
+    function processPipeline() {
+        if (!originalImageData) return;
+        statusEl.classList.remove('hidden');
+        setTimeout(() => {
+            const v = parseInt(document.getElementById('exclSlider').value);
+            let t1 = applyClearColor(currentWidth, currentHeight, originalImageData.data, 255,255,255);
+            let t2 = applyBlend(t1, v,v,v, 'exclusion');
+            let t3 = applyClearColor(currentWidth, currentHeight, t2, 255,255,255);
+            topLayerProcessed = applyBlend(t3, 255,255,255, 'average');
 
-                // --- BOTTOM LAYER PIPELINE (BLACK FOCUS) ---
-                let b1 = applyClearColor(currentWidth, currentHeight, imgData.data, 0, 0, 0);
-                let b2 = applyBlend(b1, exclVal, exclVal, exclVal, 'exclusion');
-                let b3 = applyClearColor(currentWidth, currentHeight, b2, 0, 0, 0);
-                btmLayerProcessed = applyBlend(b3, 128, 128, 128, 'multiply');
+            let b1 = applyClearColor(currentWidth, currentHeight, originalImageData.data, 0,0,0);
+            let b2 = applyBlend(b1, v,v,v, 'exclusion');
+            let b3 = applyClearColor(currentWidth, currentHeight, b2, 0,0,0);
+            btmLayerProcessed = applyBlend(b3, 128,128,128, 'multiply');
 
-                statusEl.classList.add('hidden');
-                renderComposite();
-            }, 10);
-        }
+            statusEl.classList.add('hidden');
+            renderComposite();
+        }, 10);
+    }
 
-        function renderComposite() {
-            if (!topLayerProcessed || !btmLayerProcessed) return;
+    // ─── Render ───
+    function renderComposite() {
+        ctx.clearRect(0, 0, currentWidth, currentHeight);
 
-            ctx.clearRect(0, 0, currentWidth, currentHeight);
-            
-            // Draw Bottom Layer
-            const btmAlpha = parseInt(btmOpacitySlider.value) / 100;
-            if (btmAlpha > 0) {
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = currentWidth;
-                tempCanvas.height = currentHeight;
-                const tempCtx = tempCanvas.getContext('2d');
-                tempCtx.putImageData(new ImageData(btmLayerProcessed, currentWidth, currentHeight), 0, 0);
-                
-                ctx.globalAlpha = btmAlpha;
-                ctx.drawImage(tempCanvas, 0, 0);
+        const mode = document.querySelector('input[name="baitMode"]:checked')?.value || 'none';
+        const topA = parseInt(document.getElementById('topOpacity').value) / 100;
+        const btmA = parseInt(document.getElementById('btmOpacity').value) / 100;
+        const baitA = parseInt(document.getElementById('baitOpacity').value) / 100;
+
+        try {
+            // Normal bait
+            if (mode === 'normal' && baitImageData && baitImageData.length === 4 * currentWidth * currentHeight) {
+                const temp = document.createElement('canvas');
+                temp.width = currentWidth; temp.height = currentHeight;
+                temp.getContext('2d').putImageData(new ImageData(baitImageData, currentWidth, currentHeight), 0, 0);
+                ctx.globalAlpha = baitA;
+                ctx.drawImage(temp, 0, 0);
             }
 
-            // Draw Top Layer
-            const topAlpha = parseInt(topOpacitySlider.value) / 100;
-            if (topAlpha > 0) {
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = currentWidth;
-                tempCanvas.height = currentHeight;
-                const tempCtx = tempCanvas.getContext('2d');
-                tempCtx.putImageData(new ImageData(topLayerProcessed, currentWidth, currentHeight), 0, 0);
-
-                ctx.globalAlpha = topAlpha;
-                ctx.drawImage(tempCanvas, 0, 0);
+            // Bottom layer
+            if (btmA > 0 && btmLayerProcessed) {
+                const temp = document.createElement('canvas');
+                temp.width = currentWidth; temp.height = currentHeight;
+                temp.getContext('2d').putImageData(new ImageData(btmLayerProcessed, currentWidth, currentHeight), 0, 0);
+                ctx.globalAlpha = btmA;
+                ctx.drawImage(temp, 0, 0);
             }
-            
-            ctx.globalAlpha = 1.0;
+
+            // Top layer
+            if (topA > 0 && topLayerProcessed) {
+                const temp = document.createElement('canvas');
+                temp.width = currentWidth; temp.height = currentHeight;
+                temp.getContext('2d').putImageData(new ImageData(topLayerProcessed, currentWidth, currentHeight), 0, 0);
+                ctx.globalAlpha = topA;
+                ctx.drawImage(temp, 0, 0);
+            }
+
+            // top bait
+            if (mode === 'new' && baitImageData && baitImageData.length === 4 * currentWidth * currentHeight) {
+                const comp = document.createElement('canvas');
+                comp.width = currentWidth; comp.height = currentHeight;
+                const cctx = comp.getContext('2d');
+
+                if (btmA > 0 && btmLayerProcessed) {
+                    const t = document.createElement('canvas');
+                    t.width = currentWidth; t.height = currentHeight;
+                    t.getContext('2d').putImageData(new ImageData(btmLayerProcessed, currentWidth, currentHeight), 0, 0);
+                    cctx.globalAlpha = btmA;
+                    cctx.drawImage(t, 0, 0);
+                }
+
+                if (topA > 0 && topLayerProcessed) {
+                    const t = document.createElement('canvas');
+                    t.width = currentWidth; t.height = currentHeight;
+                    t.getContext('2d').putImageData(new ImageData(topLayerProcessed, currentWidth, currentHeight), 0, 0);
+                    cctx.globalAlpha = topA;
+                    cctx.drawImage(t, 0, 0);
+                }
+
+                const finalMain = cctx.getImageData(0,0,currentWidth,currentHeight).data;
+                const bg = document.querySelector('input[name="newBaitBg"]:checked')?.value || 'black';
+                const masked = createMaskedBait(finalMain, baitImageData, currentWidth, currentHeight, bg);
+
+                const temp = document.createElement('canvas');
+                temp.width = currentWidth; temp.height = currentHeight;
+                temp.getContext('2d').putImageData(new ImageData(masked, currentWidth, currentHeight), 0, 0);
+                ctx.globalAlpha = baitA;
+                ctx.drawImage(temp, 0, 0);
+            }
+        } catch (err) {
+            console.error("Render error:", err);
+            // Fallback: draw something so canvas isn't completely blank
+            ctx.fillStyle = '#333';
+            ctx.fillRect(0, 0, currentWidth, currentHeight);
+            ctx.fillStyle = '#fff';
+            ctx.font = '20px Arial';
+            ctx.fillText('Render failed - try re-uploading bait', 20, currentHeight / 2);
         }
-    </script>
+
+        ctx.globalAlpha = 1;
+    }
+
+    // ─── Event listeners ───
+    document.getElementById('dropZoneMain').addEventListener('click', () => document.getElementById('imageInput').click());
+    document.getElementById('imageInput').addEventListener('change', e => {
+        if (e.target.files?.[0]) handleFile(e.target.files[0]);
+    });
+
+    document.getElementById('dropZoneBait').addEventListener('click', () => document.getElementById('baitInput').click());
+    document.getElementById('baitInput').addEventListener('change', e => {
+        if (e.target.files?.[0]) handleFile(e.target.files[0], true);
+    });
+
+    // Drag & drop
+    function setupDropZone(zoneId, isBait = false) {
+        const zone = document.getElementById(zoneId);
+        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add(isBait ? 'border-purple-500' : 'border-blue-500'); });
+        zone.addEventListener('dragleave', e => { zone.classList.remove(isBait ? 'border-purple-500' : 'border-blue-500'); });
+        zone.addEventListener('drop', e => {
+            e.preventDefault();
+            zone.classList.remove(isBait ? 'border-purple-500' : 'border-blue-500');
+            if (e.dataTransfer?.files?.[0]) handleFile(e.dataTransfer.files[0], isBait);
+        });
+    }
+    setupDropZone('dropZoneMain', false);
+    setupDropZone('dropZoneBait', true);
+
+    // Paste
+    document.addEventListener('paste', e => {
+        const file = [...(e.clipboardData?.items || [])].find(item => item.type.startsWith('image/'))?.getAsFile();
+        if (file) {
+            const isBait = document.activeElement?.closest('#dropZoneBait');
+            handleFile(file, !!isBait);
+        }
+    });
+
+    // Sliders & toggles
+    document.getElementById('topOpacity').addEventListener('input', e => {
+        document.getElementById('topVal').textContent = e.target.value + '%';
+        renderComposite();
+    });
+
+    document.getElementById('btmOpacity').addEventListener('input', e => {
+        document.getElementById('btmVal').textContent = e.target.value + '%';
+        renderComposite();
+    });
+
+    document.getElementById('baitOpacity').addEventListener('input', e => {
+        document.getElementById('baitOpacityVal').textContent = e.target.value + '%';
+        renderComposite();
+    });
+
+    document.getElementById('exclSlider').addEventListener('input', e => {
+        document.getElementById('exclValDisplay').textContent = `${e.target.value}, ${e.target.value}, ${e.target.value}`;
+        clearTimeout(window.procTimer);
+        window.procTimer = setTimeout(processPipeline, 150);
+    });
+
+    document.querySelectorAll('input[name="baitMode"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            document.getElementById('newBaitOptions').classList.toggle('hidden', radio.value !== 'new');
+            renderComposite();
+        });
+    });
+
+    document.querySelectorAll('input[name="newBaitBg"]').forEach(radio => radio.addEventListener('change', renderComposite));
+
+    document.getElementById('clearBaitToggle').addEventListener('change', e => {
+        document.getElementById('clearBaitOptions').classList.toggle('hidden', !e.target.checked);
+        if (baitOriginalImage) updateBaitData();
+    });
+
+    document.querySelectorAll('input[name="clearBaitColor"]').forEach(r => r.addEventListener('change', () => {
+        if (document.getElementById('clearBaitToggle').checked && baitOriginalImage) updateBaitData();
+    }));
+
+    document.getElementById('createBaitToggle').addEventListener('change', e => {
+        document.getElementById('createBaitNote').classList.toggle('hidden', !e.target.checked);
+        if (baitOriginalImage) updateBaitData();
+    });
+
+    window.setBg = function(preset) {
+        document.getElementById('canvasWrapper').className = `canvas-container bg-${preset}`;
+        document.querySelectorAll('[data-preset]').forEach(btn => {
+            const active = btn.getAttribute('data-preset') === preset;
+            btn.classList.toggle('bg-gray-700', active);
+            btn.classList.toggle('text-white', active);
+            btn.classList.toggle('text-gray-300', !active);
+        });
+    };
+
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+        if (currentWidth === 0) return;
+        const link = document.createElement('a');
+        link.download = 'bypass_result.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    });
+
+    setBg('transparent-grid');
+</script>
 </body>
 </html>
