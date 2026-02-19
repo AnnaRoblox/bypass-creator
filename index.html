@@ -28,15 +28,12 @@
 </head>
 <body class="min-h-screen flex flex-col items-center py-8 px-4 font-sans">
     <div class="w-full max-w-4xl space-y-8">
-
         <div class="text-center space-y-2">
             <h1 class="text-3xl font-bold text-blue-400">AnnaRoblox's Bypass Creator</h1>
             <p class="text-gray-400 text-sm"><b>Multi-step automated bypass with Dynamic Exclusion</b></p>
             <p class="text-gray-400 text-sm">works with decals and t-shirts</p>
         </div>
-
         <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-xl space-y-6">
-
             <!-- Main Upload -->
             <div id="dropZoneMain" class="flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded-lg p-6 hover:border-blue-400 transition-colors cursor-pointer group">
                 <input type="file" id="imageInput" accept="image/*" class="hidden">
@@ -47,11 +44,9 @@
                     <p class="text-sm text-gray-300">Main image — click / drag / paste</p>
                 </div>
             </div>
-
             <!-- Bait Section with new controls -->
             <div class="bg-gray-900/60 p-5 rounded-lg border border-gray-600 space-y-5">
                 <h3 class="font-semibold text-purple-300 text-lg">Bait Layer</h3>
-
                 <div id="dropZoneBait" class="flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded-lg p-5 hover:border-purple-400 transition-colors cursor-pointer group">
                     <input type="file" id="baitInput" accept="image/*" class="hidden">
                     <div class="text-center pointer-events-none group-hover:scale-105 transition-transform duration-200">
@@ -61,7 +56,6 @@
                         <p class="text-sm text-gray-300">Bait image (optional)</p>
                     </div>
                 </div>
-
                 <!-- Bait Mode & Options -->
                 <div class="flex flex-wrap gap-6 items-center justify-center">
                     <div class="space-x-4">
@@ -75,7 +69,6 @@
                         <label><input type="radio" name="newBaitBg" value="white"> White</label>
                     </div>
                 </div>
-
                 <!-- top bait Controls -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-3 border-t border-gray-700">
                     <!-- Bait Opacity -->
@@ -86,7 +79,6 @@
                         </div>
                         <input type="range" id="baitOpacity" min="0" max="100" value="100" class="w-full">
                     </div>
-
                     <!-- Clear Bait -->
                     <div class="space-y-2">
                         <label class="flex items-center gap-2 text-sm">
@@ -99,7 +91,6 @@
                             <label><input type="radio" name="clearBaitColor" value="white"> White</label>
                         </div>
                     </div>
-
                     <!-- Create Bait -->
                     <div class="space-y-2 col-span-full">
                         <label class="flex items-center gap-2 text-sm">
@@ -113,6 +104,84 @@
                 </div>
             </div>
 
+            <!-- TAG SECTION -->
+            <div class="bg-gray-900/60 p-5 rounded-lg border border-gray-600 space-y-5">
+                <h3 class="font-semibold text-emerald-300 text-lg">Tag Layer</h3>
+                <div id="dropZoneTag" class="flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded-lg p-5 hover:border-emerald-400 transition-colors cursor-pointer group">
+                    <input type="file" id="tagInput" accept="image/*" class="hidden">
+                    <div class="text-center pointer-events-none group-hover:scale-105 transition-transform duration-200">
+                        <svg class="h-8 w-8 mx-auto text-gray-400 mb-2 group-hover:text-emerald-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        <p class="text-sm text-gray-300">Tag image (optional) — placed on very top</p>
+                    </div>
+                </div>
+
+                <!-- Tag Size -->
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span>Tag Size (% of canvas width)</span>
+                        <span id="tagSizeVal">25%</span>
+                    </div>
+                    <input type="range" id="tagSize" min="5" max="80" value="25" class="w-full">
+                </div>
+
+                <!-- Tag Opacity -->
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span>Tag Opacity</span>
+                        <span id="tagOpacityVal">100%</span>
+                    </div>
+                    <input type="range" id="tagOpacity" min="0" max="100" value="100" class="w-full">
+                </div>
+
+                <!-- Position Presets -->
+                <div class="space-y-3">
+                    <span class="text-sm text-gray-300 block">Position Preset</span>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 p-3 rounded-lg border border-transparent has-[:checked]:border-emerald-500 cursor-pointer">
+                            <input type="radio" name="tagPosition" value="top-left" checked class="accent-emerald-400">
+                            <span class="text-sm">Top Left</span>
+                        </label>
+                        <label class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 p-3 rounded-lg border border-transparent has-[:checked]:border-emerald-500 cursor-pointer">
+                            <input type="radio" name="tagPosition" value="top-right" class="accent-emerald-400">
+                            <span class="text-sm">Top Right</span>
+                        </label>
+                        <label class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 p-3 rounded-lg border border-transparent has-[:checked]:border-emerald-500 cursor-pointer">
+                            <input type="radio" name="tagPosition" value="bottom-left" class="accent-emerald-400">
+                            <span class="text-sm">Bottom Left</span>
+                        </label>
+                        <label class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 p-3 rounded-lg border border-transparent has-[:checked]:border-emerald-500 cursor-pointer">
+                            <input type="radio" name="tagPosition" value="bottom-right" class="accent-emerald-400">
+                            <span class="text-sm">Bottom Right</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Custom Position -->
+                <div class="space-y-2 pt-3 border-t border-gray-700">
+                    <label class="flex items-center gap-2 text-sm cursor-pointer">
+                        <input type="checkbox" id="customPosToggle" class="accent-emerald-400">
+                        Custom Position (overrides preset)
+                    </label>
+                    <div id="customPosOptions" class="hidden grid grid-cols-2 gap-5">
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span>X Offset</span>
+                                <span id="tagXVal">0%</span>
+                            </div>
+                            <input type="range" id="tagX" min="0" max="100" value="0" class="w-full">
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span>Y Offset</span>
+                                <span id="tagYVal">0%</span>
+                            </div>
+                            <input type="range" id="tagY" min="0" max="100" value="0" class="w-full">
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Exclusion & Sliders -->
             <div class="bg-gray-900/40 p-4 rounded-lg border border-gray-700/50 space-y-3">
                 <div class="flex justify-between items-center">
@@ -121,7 +190,6 @@
                 </div>
                 <input type="range" id="exclSlider" min="0" max="255" value="112" class="w-full">
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-3">
                     <div class="flex justify-between"><h3 class="font-semibold text-white">Top Layer</h3><span id="topVal">100%</span></div>
@@ -132,10 +200,8 @@
                     <input type="range" id="btmOpacity" min="0" max="100" value="100" class="w-full">
                 </div>
             </div>
-
             <div id="status" class="hidden text-center text-yellow-400 animate-pulse">Processing...</div>
         </div>
-
         <!-- Canvas -->
         <div class="space-y-4">
             <div class="flex justify-center bg-gray-900 p-4 rounded-xl border border-gray-800 overflow-auto">
@@ -143,7 +209,6 @@
                     <canvas id="mainCanvas" class="max-w-full h-auto block"></canvas>
                 </div>
             </div>
-
             <div class="flex flex-col items-center space-y-3">
                 <span class="text-sm text-gray-400">Preview Background</span>
                 <div class="flex space-x-2 bg-gray-800 p-1 rounded-lg border border-gray-700">
@@ -153,7 +218,6 @@
                     <button onclick="setBg('preset-grey')" data-preset="preset-grey" class="px-4 py-2 rounded-md text-gray-300">Grey</button>
                 </div>
             </div>
-
             <div class="text-center">
                 <button id="downloadBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg disabled:opacity-50" disabled>Download</button>
             </div>
@@ -161,13 +225,12 @@
     </div>
 
     <script>
-    // ─── Core functions  ───
+    // ─── Core functions ───
     function minimumAlpha(Cc, Cb) {
         if (Cc === Cb) return 0;
         if (Cc > Cb) return Math.floor((255 * (Cc - Cb) - 1) / (255 - Cb) + 1);
         return Math.floor(255 * (Cb - Cc - 1) / Cb + 1);
     }
-
     function adjustForAlpha(Af, Cc, Cb, Cm) {
         if (Af === 0) return Cm;
         let T = 255 * (Cc - Cb) - Af * (Cm - Cb);
@@ -175,7 +238,6 @@
         else if (T > 0) Cm += Math.floor((T - 1) / Af + 1);
         return Math.min(255, Math.max(0, Cm));
     }
-
     function applyClearColor(width, height, srcData, clearR, clearG, clearB) {
         const output = new Uint8ClampedArray(srcData.length);
         const sR = 255 * clearR, sG = 255 * clearG, sB = 255 * clearB;
@@ -188,7 +250,7 @@
             let Ac = Math.max(minimumAlpha(Rc, clearR), minimumAlpha(Gc, clearG), minimumAlpha(Bc, clearB));
             if (Ac === 0) { output.set([R,G,B,0], i); }
             else {
-                output[i]   = adjustForAlpha(Ac, Rc, clearR, R);
+                output[i] = adjustForAlpha(Ac, Rc, clearR, R);
                 output[i+1] = adjustForAlpha(Ac, Gc, clearG, G);
                 output[i+2] = adjustForAlpha(Ac, Bc, clearB, B);
                 output[i+3] = Ac;
@@ -196,7 +258,6 @@
         }
         return output;
     }
-
     function applyBlend(srcData, blendR, blendG, blendB, mode) {
         const output = new Uint8ClampedArray(srcData.length);
         for (let i = 0; i < srcData.length; i += 4) {
@@ -221,20 +282,19 @@
                 default:
                     dstR = srcR; dstG = srcG; dstB = srcB;
             }
-            output[i]   = Math.min(255, Math.max(0, dstR));
+            output[i] = Math.min(255, Math.max(0, dstR));
             output[i+1] = Math.min(255, Math.max(0, dstG));
             output[i+2] = Math.min(255, Math.max(0, dstB));
             output[i+3] = srcA;
         }
         return output;
     }
-
     function createMaskedBait(finalData, baitData, width, height, bgColor) {
         const output = new Uint8ClampedArray(finalData.length);
         const bg = bgColor === 'white' ? 255 : 0;
         for (let i = 0; i < finalData.length; i += 4) {
             const fA = finalData[i+3] / 255;
-            const compR = Math.round(finalData[i]   * fA + bg * (1 - fA));
+            const compR = Math.round(finalData[i] * fA + bg * (1 - fA));
             const compG = Math.round(finalData[i+1] * fA + bg * (1 - fA));
             const compB = Math.round(finalData[i+2] * fA + bg * (1 - fA));
             if (baitData[i+3] > 0) {
@@ -245,13 +305,10 @@
         }
         return output;
     }
-
     // ─── Bait processing ───
     function processBaitImage(rawData, w, h, clearEnabled, clearColor, createEnabled) {
         let data = new Uint8ClampedArray(rawData);
-
         if (createEnabled) {
-            // Contrast + brightness
             for (let i = 0; i < data.length; i += 4) {
                 let gray = Math.round(0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
                 let contrast = 2.2;
@@ -260,8 +317,6 @@
                 adjusted = Math.max(0, Math.min(255, adjusted));
                 data[i] = data[i+1] = data[i+2] = adjusted;
             }
-
-            // Edge enhancement (inverted)
             const temp = new Uint8ClampedArray(data.length);
             temp.set(data);
             for (let y = 1; y < h-1; y++) {
@@ -278,7 +333,6 @@
                 }
             }
         }
-
         if (clearEnabled) {
             const target = clearColor === 'white' ? 255 : 0;
             for (let i = 0; i < data.length; i += 4) {
@@ -289,56 +343,45 @@
                 data[i+3] = alpha;
             }
         }
-
         return data;
     }
-
     // ─── State ───
     let originalImageData = null;
     let topLayerProcessed = null;
     let btmLayerProcessed = null;
     let baitOriginalImage = null;
     let baitImageData = null;
+    let tagOriginalImage = null;          // Tag image (kept as Image object)
     let currentWidth = 0;
     let currentHeight = 0;
-
     const canvas = document.getElementById('mainCanvas');
     const ctx = canvas.getContext('2d');
     const statusEl = document.getElementById('status');
     const downloadBtn = document.getElementById('downloadBtn');
-
     // ─── File handling ───
-    function handleFile(file, isBait = false) {
+    function handleFile(file, mode = 'main') {
         if (!file || !file.type.startsWith('image/')) return;
         const reader = new FileReader();
         reader.onload = e => {
             const img = new Image();
             img.onload = () => {
-                if (!isBait) {
-                    // Reset bait data before resize to prevent length mismatch
+                if (mode === 'main') {
                     baitImageData = null;
-
                     currentWidth = canvas.width = img.width;
                     currentHeight = canvas.height = img.height;
-
                     ctx.clearRect(0, 0, currentWidth, currentHeight);
                     ctx.drawImage(img, 0, 0);
-
                     originalImageData = ctx.getImageData(0, 0, currentWidth, currentHeight);
-
-                    // Rebuild bait at new size if it exists
-                    if (baitOriginalImage) {
-                        updateBaitData();
-                    }
-
+                    if (baitOriginalImage) updateBaitData();
                     processPipeline();
                     downloadBtn.disabled = false;
-
-                    // Extra render after resize (fixes timing issues in some browsers)
                     setTimeout(renderComposite, 50);
-                } else {
+                } else if (mode === 'bait') {
                     baitOriginalImage = img;
                     updateBaitData();
+                    renderComposite();
+                } else if (mode === 'tag') {
+                    tagOriginalImage = img;
                     renderComposite();
                 }
             };
@@ -346,36 +389,29 @@
         };
         reader.readAsDataURL(file);
     }
-
     function updateBaitData() {
         if (!baitOriginalImage || currentWidth <= 0 || currentHeight <= 0) {
             baitImageData = null;
             renderComposite();
             return;
         }
-
         const temp = document.createElement('canvas');
         temp.width = currentWidth;
         temp.height = currentHeight;
         const tctx = temp.getContext('2d');
         tctx.drawImage(baitOriginalImage, 0, 0, currentWidth, currentHeight);
-
         const rawData = tctx.getImageData(0, 0, currentWidth, currentHeight).data;
-
         const clearEnabled = document.getElementById('clearBaitToggle').checked;
         const clearColor = document.querySelector('input[name="clearBaitColor"]:checked')?.value || 'black';
         const createEnabled = document.getElementById('createBaitToggle').checked;
-
         try {
             baitImageData = processBaitImage(rawData, currentWidth, currentHeight, clearEnabled, clearColor, createEnabled);
         } catch (err) {
             console.error("Bait processing failed:", err);
             baitImageData = null;
         }
-
         renderComposite();
     }
-
     // ─── Processing pipeline ───
     function processPipeline() {
         if (!originalImageData) return;
@@ -386,26 +422,21 @@
             let t2 = applyBlend(t1, v,v,v, 'exclusion');
             let t3 = applyClearColor(currentWidth, currentHeight, t2, 255,255,255);
             topLayerProcessed = applyBlend(t3, 255,255,255, 'average');
-
             let b1 = applyClearColor(currentWidth, currentHeight, originalImageData.data, 0,0,0);
             let b2 = applyBlend(b1, v,v,v, 'exclusion');
             let b3 = applyClearColor(currentWidth, currentHeight, b2, 0,0,0);
             btmLayerProcessed = applyBlend(b3, 128,128,128, 'multiply');
-
             statusEl.classList.add('hidden');
             renderComposite();
         }, 10);
     }
-
     // ─── Render ───
     function renderComposite() {
         ctx.clearRect(0, 0, currentWidth, currentHeight);
-
         const mode = document.querySelector('input[name="baitMode"]:checked')?.value || 'none';
         const topA = parseInt(document.getElementById('topOpacity').value) / 100;
         const btmA = parseInt(document.getElementById('btmOpacity').value) / 100;
         const baitA = parseInt(document.getElementById('baitOpacity').value) / 100;
-
         try {
             // Normal bait
             if (mode === 'normal' && baitImageData && baitImageData.length === 4 * currentWidth * currentHeight) {
@@ -415,7 +446,6 @@
                 ctx.globalAlpha = baitA;
                 ctx.drawImage(temp, 0, 0);
             }
-
             // Bottom layer
             if (btmA > 0 && btmLayerProcessed) {
                 const temp = document.createElement('canvas');
@@ -424,7 +454,6 @@
                 ctx.globalAlpha = btmA;
                 ctx.drawImage(temp, 0, 0);
             }
-
             // Top layer
             if (topA > 0 && topLayerProcessed) {
                 const temp = document.createElement('canvas');
@@ -433,13 +462,11 @@
                 ctx.globalAlpha = topA;
                 ctx.drawImage(temp, 0, 0);
             }
-
             // top bait
             if (mode === 'new' && baitImageData && baitImageData.length === 4 * currentWidth * currentHeight) {
                 const comp = document.createElement('canvas');
                 comp.width = currentWidth; comp.height = currentHeight;
                 const cctx = comp.getContext('2d');
-
                 if (btmA > 0 && btmLayerProcessed) {
                     const t = document.createElement('canvas');
                     t.width = currentWidth; t.height = currentHeight;
@@ -447,7 +474,6 @@
                     cctx.globalAlpha = btmA;
                     cctx.drawImage(t, 0, 0);
                 }
-
                 if (topA > 0 && topLayerProcessed) {
                     const t = document.createElement('canvas');
                     t.width = currentWidth; t.height = currentHeight;
@@ -455,62 +481,110 @@
                     cctx.globalAlpha = topA;
                     cctx.drawImage(t, 0, 0);
                 }
-
                 const finalMain = cctx.getImageData(0,0,currentWidth,currentHeight).data;
                 const bg = document.querySelector('input[name="newBaitBg"]:checked')?.value || 'black';
                 const masked = createMaskedBait(finalMain, baitImageData, currentWidth, currentHeight, bg);
-
                 const temp = document.createElement('canvas');
                 temp.width = currentWidth; temp.height = currentHeight;
                 temp.getContext('2d').putImageData(new ImageData(masked, currentWidth, currentHeight), 0, 0);
                 ctx.globalAlpha = baitA;
                 ctx.drawImage(temp, 0, 0);
             }
+
+            // ==================== TAG LAYER (very top) ====================
+            if (tagOriginalImage && currentWidth > 0 && currentHeight > 0) {
+                ctx.save();
+                const sizePct = parseInt(document.getElementById('tagSize').value) / 100;
+                const tagOpacity = parseInt(document.getElementById('tagOpacity').value) / 100;
+                ctx.globalAlpha = tagOpacity;
+
+                const origW = tagOriginalImage.width;
+                const origH = tagOriginalImage.height;
+
+                // Scale: width = sizePct of canvas width, preserve aspect ratio
+                let scaledW = currentWidth * sizePct;
+                let scaleFactor = scaledW / origW;
+                let scaledH = origH * scaleFactor;
+
+                // Position
+                let drawX = 0;
+                let drawY = 0;
+                const isCustom = document.getElementById('customPosToggle').checked;
+
+                if (isCustom) {
+                    const xPct = parseInt(document.getElementById('tagX').value) / 100;
+                    const yPct = parseInt(document.getElementById('tagY').value) / 100;
+                    drawX = xPct * (currentWidth - scaledW);
+                    drawY = yPct * (currentHeight - scaledH);
+                } else {
+                    const preset = document.querySelector('input[name="tagPosition"]:checked')?.value || 'top-left';
+                    switch (preset) {
+                        case 'top-left':    drawX = 0; drawY = 0; break;
+                        case 'top-right':   drawX = currentWidth - scaledW; drawY = 0; break;
+                        case 'bottom-left': drawX = 0; drawY = currentHeight - scaledH; break;
+                        case 'bottom-right':drawX = currentWidth - scaledW; drawY = currentHeight - scaledH; break;
+                    }
+                }
+
+                // Clamp so tag never goes completely off-screen
+                drawX = Math.max(0, Math.min(drawX, currentWidth - scaledW));
+                drawY = Math.max(0, Math.min(drawY, currentHeight - scaledH));
+
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(tagOriginalImage, drawX, drawY, scaledW, scaledH);
+                ctx.restore();
+            }
         } catch (err) {
             console.error("Render error:", err);
-            // Fallback: draw something so canvas isn't completely blank
             ctx.fillStyle = '#333';
             ctx.fillRect(0, 0, currentWidth, currentHeight);
             ctx.fillStyle = '#fff';
             ctx.font = '20px Arial';
-            ctx.fillText('Render failed - try re-uploading bait', 20, currentHeight / 2);
+            ctx.fillText('Render failed - try re-uploading', 20, currentHeight / 2);
         }
-
         ctx.globalAlpha = 1;
     }
-
     // ─── Event listeners ───
     document.getElementById('dropZoneMain').addEventListener('click', () => document.getElementById('imageInput').click());
     document.getElementById('imageInput').addEventListener('change', e => {
-        if (e.target.files?.[0]) handleFile(e.target.files[0]);
+        if (e.target.files?.[0]) handleFile(e.target.files[0], 'main');
     });
-
     document.getElementById('dropZoneBait').addEventListener('click', () => document.getElementById('baitInput').click());
     document.getElementById('baitInput').addEventListener('change', e => {
-        if (e.target.files?.[0]) handleFile(e.target.files[0], true);
+        if (e.target.files?.[0]) handleFile(e.target.files[0], 'bait');
+    });
+    document.getElementById('dropZoneTag').addEventListener('click', () => document.getElementById('tagInput').click());
+    document.getElementById('tagInput').addEventListener('change', e => {
+        if (e.target.files?.[0]) handleFile(e.target.files[0], 'tag');
     });
 
     // Drag & drop
-    function setupDropZone(zoneId, isBait = false) {
+    function setupDropZone(zoneId, colorClass) {
         const zone = document.getElementById(zoneId);
-        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add(isBait ? 'border-purple-500' : 'border-blue-500'); });
-        zone.addEventListener('dragleave', e => { zone.classList.remove(isBait ? 'border-purple-500' : 'border-blue-500'); });
+        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add(colorClass); });
+        zone.addEventListener('dragleave', e => { zone.classList.remove(colorClass); });
         zone.addEventListener('drop', e => {
             e.preventDefault();
-            zone.classList.remove(isBait ? 'border-purple-500' : 'border-blue-500');
-            if (e.dataTransfer?.files?.[0]) handleFile(e.dataTransfer.files[0], isBait);
+            zone.classList.remove(colorClass);
+            if (e.dataTransfer?.files?.[0]) {
+                const mode = zoneId === 'dropZoneBait' ? 'bait' : zoneId === 'dropZoneTag' ? 'tag' : 'main';
+                handleFile(e.dataTransfer.files[0], mode);
+            }
         });
     }
-    setupDropZone('dropZoneMain', false);
-    setupDropZone('dropZoneBait', true);
+    setupDropZone('dropZoneMain', 'border-blue-500');
+    setupDropZone('dropZoneBait', 'border-purple-500');
+    setupDropZone('dropZoneTag', 'border-emerald-500');
 
-    // Paste
+    // Paste support
     document.addEventListener('paste', e => {
         const file = [...(e.clipboardData?.items || [])].find(item => item.type.startsWith('image/'))?.getAsFile();
-        if (file) {
-            const isBait = document.activeElement?.closest('#dropZoneBait');
-            handleFile(file, !!isBait);
-        }
+        if (!file) return;
+        const active = document.activeElement;
+        if (active?.closest('#dropZoneTag')) handleFile(file, 'tag');
+        else if (active?.closest('#dropZoneBait')) handleFile(file, 'bait');
+        else handleFile(file, 'main');
     });
 
     // Sliders & toggles
@@ -518,44 +592,63 @@
         document.getElementById('topVal').textContent = e.target.value + '%';
         renderComposite();
     });
-
     document.getElementById('btmOpacity').addEventListener('input', e => {
         document.getElementById('btmVal').textContent = e.target.value + '%';
         renderComposite();
     });
-
     document.getElementById('baitOpacity').addEventListener('input', e => {
         document.getElementById('baitOpacityVal').textContent = e.target.value + '%';
         renderComposite();
     });
-
     document.getElementById('exclSlider').addEventListener('input', e => {
         document.getElementById('exclValDisplay').textContent = `${e.target.value}, ${e.target.value}, ${e.target.value}`;
         clearTimeout(window.procTimer);
         window.procTimer = setTimeout(processPipeline, 150);
     });
-
     document.querySelectorAll('input[name="baitMode"]').forEach(radio => {
         radio.addEventListener('change', () => {
             document.getElementById('newBaitOptions').classList.toggle('hidden', radio.value !== 'new');
             renderComposite();
         });
     });
-
     document.querySelectorAll('input[name="newBaitBg"]').forEach(radio => radio.addEventListener('change', renderComposite));
-
     document.getElementById('clearBaitToggle').addEventListener('change', e => {
         document.getElementById('clearBaitOptions').classList.toggle('hidden', !e.target.checked);
         if (baitOriginalImage) updateBaitData();
     });
-
     document.querySelectorAll('input[name="clearBaitColor"]').forEach(r => r.addEventListener('change', () => {
         if (document.getElementById('clearBaitToggle').checked && baitOriginalImage) updateBaitData();
     }));
-
     document.getElementById('createBaitToggle').addEventListener('change', e => {
         document.getElementById('createBaitNote').classList.toggle('hidden', !e.target.checked);
         if (baitOriginalImage) updateBaitData();
+    });
+
+    // Tag controls
+    document.getElementById('tagSize').addEventListener('input', e => {
+        document.getElementById('tagSizeVal').textContent = e.target.value + '%';
+        renderComposite();
+    });
+    document.getElementById('tagOpacity').addEventListener('input', e => {
+        document.getElementById('tagOpacityVal').textContent = e.target.value + '%';
+        renderComposite();
+    });
+    document.querySelectorAll('input[name="tagPosition"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (!document.getElementById('customPosToggle').checked) renderComposite();
+        });
+    });
+    document.getElementById('customPosToggle').addEventListener('change', e => {
+        document.getElementById('customPosOptions').classList.toggle('hidden', !e.target.checked);
+        renderComposite();
+    });
+    document.getElementById('tagX').addEventListener('input', e => {
+        document.getElementById('tagXVal').textContent = e.target.value + '%';
+        renderComposite();
+    });
+    document.getElementById('tagY').addEventListener('input', e => {
+        document.getElementById('tagYVal').textContent = e.target.value + '%';
+        renderComposite();
     });
 
     window.setBg = function(preset) {
@@ -567,7 +660,6 @@
             btn.classList.toggle('text-gray-300', !active);
         });
     };
-
     document.getElementById('downloadBtn').addEventListener('click', () => {
         if (currentWidth === 0) return;
         const link = document.createElement('a');
@@ -575,8 +667,7 @@
         link.href = canvas.toDataURL('image/png');
         link.click();
     });
-
     setBg('transparent-grid');
-</script>
+    </script>
 </body>
 </html>
