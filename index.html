@@ -44,6 +44,29 @@
                     <p class="text-sm text-gray-300">Main image — click / drag / paste</p>
                 </div>
             </div>
+
+            <!-- CUSTOM SIZE SECTION -->
+            <div class="bg-gray-900/60 p-5 rounded-lg border border-gray-600 space-y-5">
+                <h3 class="font-semibold text-amber-300 text-lg">Output Size</h3>
+                <label class="flex items-center gap-3 text-sm cursor-pointer">
+                    <input type="checkbox" id="customSizeToggle" class="w-5 h-5 accent-amber-400">
+                    <span>Set custom canvas size (resizes main image to exact W×H)</span>
+                </label>
+                <div id="customSizeOptions" class="hidden grid grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block text-xs text-gray-400">Width (px)</label>
+                        <input type="number" id="customWidth" value="512" min="64" max="4096" step="1"
+                               class="w-full bg-gray-800 border border-gray-700 focus:border-amber-400 rounded-lg px-4 py-2.5 text-white font-mono">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs text-gray-400">Height (px)</label>
+                        <input type="number" id="customHeight" value="512" min="64" max="4096" step="1"
+                               class="w-full bg-gray-800 border border-gray-700 focus:border-amber-400 rounded-lg px-4 py-2.5 text-white font-mono">
+                    </div>
+                </div>
+                <p class="text-[10px] text-gray-500 italic">Common Roblox sizes: 512×512, 1024×1024, 2048×2048</p>
+            </div>
+
             <!-- Bait Section with new controls -->
             <div class="bg-gray-900/60 p-5 rounded-lg border border-gray-600 space-y-5">
                 <h3 class="font-semibold text-purple-300 text-lg">Bait Layer</h3>
@@ -116,7 +139,6 @@
                         <p class="text-sm text-gray-300">Tag image (optional) — placed on very top</p>
                     </div>
                 </div>
-
                 <!-- Tag Size -->
                 <div class="space-y-2">
                     <div class="flex justify-between text-sm">
@@ -125,7 +147,6 @@
                     </div>
                     <input type="range" id="tagSize" min="5" max="80" value="25" class="w-full">
                 </div>
-
                 <!-- Tag Opacity -->
                 <div class="space-y-2">
                     <div class="flex justify-between text-sm">
@@ -134,7 +155,6 @@
                     </div>
                     <input type="range" id="tagOpacity" min="0" max="100" value="100" class="w-full">
                 </div>
-
                 <!-- Position Presets -->
                 <div class="space-y-3">
                     <span class="text-sm text-gray-300 block">Position Preset</span>
@@ -157,7 +177,6 @@
                         </label>
                     </div>
                 </div>
-
                 <!-- Custom Position -->
                 <div class="space-y-2 pt-3 border-t border-gray-700">
                     <label class="flex items-center gap-2 text-sm cursor-pointer">
@@ -182,6 +201,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Exclusion & Sliders -->
             <div class="bg-gray-900/40 p-4 rounded-lg border border-gray-700/50 space-y-3">
                 <div class="flex justify-between items-center">
@@ -202,6 +222,7 @@
             </div>
             <div id="status" class="hidden text-center text-yellow-400 animate-pulse">Processing...</div>
         </div>
+
         <!-- Canvas -->
         <div class="space-y-4">
             <div class="flex justify-center bg-gray-900 p-4 rounded-xl border border-gray-800 overflow-auto">
@@ -345,19 +366,52 @@
         }
         return data;
     }
+
     // ─── State ───
     let originalImageData = null;
     let topLayerProcessed = null;
     let btmLayerProcessed = null;
     let baitOriginalImage = null;
     let baitImageData = null;
-    let tagOriginalImage = null;          // Tag image (kept as Image object)
+    let tagOriginalImage = null;
+    let mainSourceImage = null;   // stores the original uploaded image (unscaled)
     let currentWidth = 0;
     let currentHeight = 0;
     const canvas = document.getElementById('mainCanvas');
     const ctx = canvas.getContext('2d');
     const statusEl = document.getElementById('status');
     const downloadBtn = document.getElementById('downloadBtn');
+
+    // ─── Custom Size Helper ───
+    function applyMainImageSize() {
+        if (!mainSourceImage) return;
+
+        const toggle = document.getElementById('customSizeToggle').checked;
+        let w = mainSourceImage.width;
+        let h = mainSourceImage.height;
+
+        if (toggle) {
+            const cw = parseInt(document.getElementById('customWidth').value);
+            const ch = parseInt(document.getElementById('customHeight').value);
+            if (!isNaN(cw) && cw >= 64) w = cw;
+            if (!isNaN(ch) && ch >= 64) h = ch;
+        }
+
+        currentWidth = canvas.width = Math.max(64, w);
+        currentHeight = canvas.height = Math.max(64, h);
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.clearRect(0, 0, currentWidth, currentHeight);
+        ctx.drawImage(mainSourceImage, 0, 0, currentWidth, currentHeight);
+
+        originalImageData = ctx.getImageData(0, 0, currentWidth, currentHeight);
+
+        if (baitOriginalImage) updateBaitData();
+        processPipeline();
+        downloadBtn.disabled = false;
+    }
+
     // ─── File handling ───
     function handleFile(file, mode = 'main') {
         if (!file || !file.type.startsWith('image/')) return;
@@ -366,16 +420,8 @@
             const img = new Image();
             img.onload = () => {
                 if (mode === 'main') {
-                    baitImageData = null;
-                    currentWidth = canvas.width = img.width;
-                    currentHeight = canvas.height = img.height;
-                    ctx.clearRect(0, 0, currentWidth, currentHeight);
-                    ctx.drawImage(img, 0, 0);
-                    originalImageData = ctx.getImageData(0, 0, currentWidth, currentHeight);
-                    if (baitOriginalImage) updateBaitData();
-                    processPipeline();
-                    downloadBtn.disabled = false;
-                    setTimeout(renderComposite, 50);
+                    mainSourceImage = img;
+                    applyMainImageSize();               // <-- handles resize + everything
                 } else if (mode === 'bait') {
                     baitOriginalImage = img;
                     updateBaitData();
@@ -389,6 +435,7 @@
         };
         reader.readAsDataURL(file);
     }
+
     function updateBaitData() {
         if (!baitOriginalImage || currentWidth <= 0 || currentHeight <= 0) {
             baitImageData = null;
@@ -412,6 +459,7 @@
         }
         renderComposite();
     }
+
     // ─── Processing pipeline ───
     function processPipeline() {
         if (!originalImageData) return;
@@ -430,6 +478,7 @@
             renderComposite();
         }, 10);
     }
+
     // ─── Render ───
     function renderComposite() {
         ctx.clearRect(0, 0, currentWidth, currentHeight);
@@ -490,27 +539,20 @@
                 ctx.globalAlpha = baitA;
                 ctx.drawImage(temp, 0, 0);
             }
-
             // ==================== TAG LAYER (very top) ====================
             if (tagOriginalImage && currentWidth > 0 && currentHeight > 0) {
                 ctx.save();
                 const sizePct = parseInt(document.getElementById('tagSize').value) / 100;
                 const tagOpacity = parseInt(document.getElementById('tagOpacity').value) / 100;
                 ctx.globalAlpha = tagOpacity;
-
                 const origW = tagOriginalImage.width;
                 const origH = tagOriginalImage.height;
-
-                // Scale: width = sizePct of canvas width, preserve aspect ratio
                 let scaledW = currentWidth * sizePct;
                 let scaleFactor = scaledW / origW;
                 let scaledH = origH * scaleFactor;
-
-                // Position
                 let drawX = 0;
                 let drawY = 0;
                 const isCustom = document.getElementById('customPosToggle').checked;
-
                 if (isCustom) {
                     const xPct = parseInt(document.getElementById('tagX').value) / 100;
                     const yPct = parseInt(document.getElementById('tagY').value) / 100;
@@ -519,17 +561,14 @@
                 } else {
                     const preset = document.querySelector('input[name="tagPosition"]:checked')?.value || 'top-left';
                     switch (preset) {
-                        case 'top-left':    drawX = 0; drawY = 0; break;
-                        case 'top-right':   drawX = currentWidth - scaledW; drawY = 0; break;
+                        case 'top-left': drawX = 0; drawY = 0; break;
+                        case 'top-right': drawX = currentWidth - scaledW; drawY = 0; break;
                         case 'bottom-left': drawX = 0; drawY = currentHeight - scaledH; break;
                         case 'bottom-right':drawX = currentWidth - scaledW; drawY = currentHeight - scaledH; break;
                     }
                 }
-
-                // Clamp so tag never goes completely off-screen
                 drawX = Math.max(0, Math.min(drawX, currentWidth - scaledW));
                 drawY = Math.max(0, Math.min(drawY, currentHeight - scaledH));
-
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = 'high';
                 ctx.drawImage(tagOriginalImage, drawX, drawY, scaledW, scaledH);
@@ -545,6 +584,7 @@
         }
         ctx.globalAlpha = 1;
     }
+
     // ─── Event listeners ───
     document.getElementById('dropZoneMain').addEventListener('click', () => document.getElementById('imageInput').click());
     document.getElementById('imageInput').addEventListener('change', e => {
@@ -651,6 +691,26 @@
         renderComposite();
     });
 
+    // ─── Custom Size Controls ───
+    const customSizeToggle = document.getElementById('customSizeToggle');
+    const customSizeOptions = document.getElementById('customSizeOptions');
+    const customWidthInput = document.getElementById('customWidth');
+    const customHeightInput = document.getElementById('customHeight');
+
+    customSizeToggle.addEventListener('change', () => {
+        customSizeOptions.classList.toggle('hidden', !customSizeToggle.checked);
+        if (mainSourceImage) applyMainImageSize();
+    });
+
+    function debounceSizeChange() {
+        clearTimeout(window.sizeDebounceTimer);
+        window.sizeDebounceTimer = setTimeout(() => {
+            if (customSizeToggle.checked && mainSourceImage) applyMainImageSize();
+        }, 350);
+    }
+    customWidthInput.addEventListener('input', debounceSizeChange);
+    customHeightInput.addEventListener('input', debounceSizeChange);
+
     window.setBg = function(preset) {
         document.getElementById('canvasWrapper').className = `canvas-container bg-${preset}`;
         document.querySelectorAll('[data-preset]').forEach(btn => {
@@ -660,6 +720,7 @@
             btn.classList.toggle('text-gray-300', !active);
         });
     };
+
     document.getElementById('downloadBtn').addEventListener('click', () => {
         if (currentWidth === 0) return;
         const link = document.createElement('a');
@@ -667,6 +728,7 @@
         link.href = canvas.toDataURL('image/png');
         link.click();
     });
+
     setBg('transparent-grid');
     </script>
 </body>
