@@ -44,7 +44,6 @@
                     <p class="text-sm text-gray-300">Main image — click / drag / paste</p>
                 </div>
             </div>
-
             <!-- CUSTOM SIZE SECTION -->
             <div class="bg-gray-900/60 p-5 rounded-lg border border-gray-600 space-y-5">
                 <h3 class="font-semibold text-amber-300 text-lg">Output Size</h3>
@@ -66,7 +65,6 @@
                 </div>
                 <p class="text-[10px] text-gray-500 italic">Common Roblox sizes: 512×512, 1024×1024, 2048×2048</p>
             </div>
-
             <!-- Bait Section with new controls -->
             <div class="bg-gray-900/60 p-5 rounded-lg border border-gray-600 space-y-5">
                 <h3 class="font-semibold text-purple-300 text-lg">Bait Layer</h3>
@@ -126,7 +124,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- TAG SECTION -->
             <div class="bg-gray-900/60 p-5 rounded-lg border border-gray-600 space-y-5">
                 <h3 class="font-semibold text-emerald-300 text-lg">Tag Layer</h3>
@@ -201,7 +198,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Exclusion & Sliders -->
             <div class="bg-gray-900/40 p-4 rounded-lg border border-gray-700/50 space-y-3">
                 <div class="flex justify-between items-center">
@@ -223,13 +219,35 @@
             <div id="status" class="hidden text-center text-yellow-400 animate-pulse">Processing...</div>
         </div>
 
-        <!-- Canvas -->
-        <div class="space-y-4">
-            <div class="flex justify-center bg-gray-900 p-4 rounded-xl border border-gray-800 overflow-auto">
+        <!-- Canvas Preview Area -->
+        <div class="space-y-6">
+            <!-- Full resolution preview -->
+            <div id="fullPreviewBlock" class="flex justify-center bg-gray-900 p-4 rounded-xl border border-gray-800 overflow-auto">
                 <div id="canvasWrapper" class="canvas-container bg-transparent-grid">
                     <canvas id="mainCanvas" class="max-w-full h-auto block"></canvas>
                 </div>
             </div>
+
+            <!--  Roblox Decal Preview -->
+            <div id="decalPreviewBlock" class="hidden flex justify-center bg-gray-900 p-4 rounded-xl border border-gray-800 overflow-auto">
+                <div class="canvas-container bg-transparent-grid relative">
+                    <canvas id="decalCanvas" width="300" height="300" class="block"></canvas>
+                    <div class="absolute top-2 right-2 bg-amber-500 text-[10px] font-mono font-bold text-black px-2 py-0.5 rounded shadow">300×300</div>
+                </div>
+            </div>
+
+            <!-- Toggle below the canvas -->
+            <div class="flex justify-center">
+                <label class="flex items-center gap-3 bg-gray-800 hover:bg-gray-700 px-6 py-3 rounded-2xl border border-gray-700 cursor-pointer transition-all">
+                    <input type="checkbox" id="decalPreviewToggle" class="w-5 h-5 accent-blue-500">
+                    <div>
+                        <span class="text-white text-sm font-medium">Preview at Roblox Decal Size</span>
+                        <span class="block text-xs text-gray-400">see resize quality loss</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Preview Background -->
             <div class="flex flex-col items-center space-y-3">
                 <span class="text-sm text-gray-400">Preview Background</span>
                 <div class="flex space-x-2 bg-gray-800 p-1 rounded-lg border border-gray-700">
@@ -239,6 +257,7 @@
                     <button onclick="setBg('preset-grey')" data-preset="preset-grey" class="px-4 py-2 rounded-md text-gray-300">Grey</button>
                 </div>
             </div>
+
             <div class="text-center">
                 <button id="downloadBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg disabled:opacity-50" disabled>Download</button>
             </div>
@@ -374,55 +393,47 @@
     let baitOriginalImage = null;
     let baitImageData = null;
     let tagOriginalImage = null;
-    let mainSourceImage = null;   // stores the original uploaded image (unscaled)
+    let mainSourceImage = null;
     let currentWidth = 0;
     let currentHeight = 0;
+    let decalPreviewEnabled = false;
+
     const canvas = document.getElementById('mainCanvas');
     const ctx = canvas.getContext('2d');
     const statusEl = document.getElementById('status');
     const downloadBtn = document.getElementById('downloadBtn');
 
+    // Decal preview
+    const decalCanvas = document.getElementById('decalCanvas');
+    const decalCtx = decalCanvas.getContext('2d');
+
     // ─── Custom Size Helper ───
     function applyMainImageSize() {
-    if (!mainSourceImage) return;
-
-    const toggle = document.getElementById('customSizeToggle').checked;
-    let w, h;
-
-    if (toggle) {
-        // Custom size → use values from inputs (with minimum protection)
-        const cw = parseInt(document.getElementById('customWidth').value) || mainSourceImage.width;
-        const ch = parseInt(document.getElementById('customHeight').value) || mainSourceImage.height;
-        w = Math.max(64, cw);
-        h = Math.max(64, ch);
-    } else {
-        
-        // When custom size is OFF → use original image dimensions
-        w = mainSourceImage.width;
-        h = mainSourceImage.height;
+        if (!mainSourceImage) return;
+        const toggle = document.getElementById('customSizeToggle').checked;
+        let w, h;
+        if (toggle) {
+            const cw = parseInt(document.getElementById('customWidth').value) || mainSourceImage.width;
+            const ch = parseInt(document.getElementById('customHeight').value) || mainSourceImage.height;
+            w = Math.max(64, cw);
+            h = Math.max(64, ch);
+        } else {
+            w = mainSourceImage.width;
+            h = mainSourceImage.height;
+        }
+        w = Math.max(64, Math.min(4096, w));
+        h = Math.max(64, Math.min(4096, h));
+        currentWidth = canvas.width = w;
+        currentHeight = canvas.height = h;
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.clearRect(0, 0, currentWidth, currentHeight);
+        ctx.drawImage(mainSourceImage, 0, 0, w, h);
+        originalImageData = ctx.getImageData(0, 0, currentWidth, currentHeight);
+        if (baitOriginalImage) updateBaitData();
+        processPipeline();
+        downloadBtn.disabled = false;
     }
-
-    // Prevent extremely tiny or broken values
-    w = Math.max(64, Math.min(4096, w));
-    h = Math.max(64, Math.min(4096, h));
-
-    currentWidth  = canvas.width  = w;
-    currentHeight = canvas.height = h;
-
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    ctx.clearRect(0, 0, currentWidth, currentHeight);
-
-    // Draw original image at its native size (no forced scaling)
-    ctx.drawImage(mainSourceImage, 0, 0, w, h);
-
-    originalImageData = ctx.getImageData(0, 0, currentWidth, currentHeight);
-
-    if (baitOriginalImage) updateBaitData();
-    processPipeline();
-
-    downloadBtn.disabled = false;
-}
 
     // ─── File handling ───
     function handleFile(file, mode = 'main') {
@@ -433,7 +444,7 @@
             img.onload = () => {
                 if (mode === 'main') {
                     mainSourceImage = img;
-                    applyMainImageSize();               // <-- handles resize + everything
+                    applyMainImageSize();
                 } else if (mode === 'bait') {
                     baitOriginalImage = img;
                     updateBaitData();
@@ -499,7 +510,6 @@
         const btmA = parseInt(document.getElementById('btmOpacity').value) / 100;
         const baitA = parseInt(document.getElementById('baitOpacity').value) / 100;
         try {
-            // Normal bait
             if (mode === 'normal' && baitImageData && baitImageData.length === 4 * currentWidth * currentHeight) {
                 const temp = document.createElement('canvas');
                 temp.width = currentWidth; temp.height = currentHeight;
@@ -507,7 +517,6 @@
                 ctx.globalAlpha = baitA;
                 ctx.drawImage(temp, 0, 0);
             }
-            // Bottom layer
             if (btmA > 0 && btmLayerProcessed) {
                 const temp = document.createElement('canvas');
                 temp.width = currentWidth; temp.height = currentHeight;
@@ -515,7 +524,6 @@
                 ctx.globalAlpha = btmA;
                 ctx.drawImage(temp, 0, 0);
             }
-            // Top layer
             if (topA > 0 && topLayerProcessed) {
                 const temp = document.createElement('canvas');
                 temp.width = currentWidth; temp.height = currentHeight;
@@ -523,7 +531,6 @@
                 ctx.globalAlpha = topA;
                 ctx.drawImage(temp, 0, 0);
             }
-            // top bait
             if (mode === 'new' && baitImageData && baitImageData.length === 4 * currentWidth * currentHeight) {
                 const comp = document.createElement('canvas');
                 comp.width = currentWidth; comp.height = currentHeight;
@@ -551,7 +558,6 @@
                 ctx.globalAlpha = baitA;
                 ctx.drawImage(temp, 0, 0);
             }
-            // ==================== TAG LAYER (very top) ====================
             if (tagOriginalImage && currentWidth > 0 && currentHeight > 0) {
                 ctx.save();
                 const sizePct = parseInt(document.getElementById('tagSize').value) / 100;
@@ -595,6 +601,14 @@
             ctx.fillText('Render failed - try re-uploading', 20, currentHeight / 2);
         }
         ctx.globalAlpha = 1;
+
+        // Update 300x300 preview if enabled (shows resized quality loss)
+        if (decalPreviewEnabled) {
+            decalCtx.imageSmoothingEnabled = true;
+            decalCtx.imageSmoothingQuality = 'high';
+            decalCtx.clearRect(0, 0, 300, 300);
+            decalCtx.drawImage(canvas, 0, 0, 300, 300);
+        }
     }
 
     // ─── Event listeners ───
@@ -611,7 +625,6 @@
         if (e.target.files?.[0]) handleFile(e.target.files[0], 'tag');
     });
 
-    // Drag & drop
     function setupDropZone(zoneId, colorClass) {
         const zone = document.getElementById(zoneId);
         zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add(colorClass); });
@@ -629,7 +642,6 @@
     setupDropZone('dropZoneBait', 'border-purple-500');
     setupDropZone('dropZoneTag', 'border-emerald-500');
 
-    // Paste support
     document.addEventListener('paste', e => {
         const file = [...(e.clipboardData?.items || [])].find(item => item.type.startsWith('image/'))?.getAsFile();
         if (!file) return;
@@ -639,7 +651,6 @@
         else handleFile(file, 'main');
     });
 
-    // Sliders & toggles
     document.getElementById('topOpacity').addEventListener('input', e => {
         document.getElementById('topVal').textContent = e.target.value + '%';
         renderComposite();
@@ -675,8 +686,6 @@
         document.getElementById('createBaitNote').classList.toggle('hidden', !e.target.checked);
         if (baitOriginalImage) updateBaitData();
     });
-
-    // Tag controls
     document.getElementById('tagSize').addEventListener('input', e => {
         document.getElementById('tagSizeVal').textContent = e.target.value + '%';
         renderComposite();
@@ -702,18 +711,14 @@
         document.getElementById('tagYVal').textContent = e.target.value + '%';
         renderComposite();
     });
-
-    // ─── Custom Size Controls ───
     const customSizeToggle = document.getElementById('customSizeToggle');
     const customSizeOptions = document.getElementById('customSizeOptions');
     const customWidthInput = document.getElementById('customWidth');
     const customHeightInput = document.getElementById('customHeight');
-
     customSizeToggle.addEventListener('change', () => {
         customSizeOptions.classList.toggle('hidden', !customSizeToggle.checked);
         if (mainSourceImage) applyMainImageSize();
     });
-
     function debounceSizeChange() {
         clearTimeout(window.sizeDebounceTimer);
         window.sizeDebounceTimer = setTimeout(() => {
@@ -723,8 +728,28 @@
     customWidthInput.addEventListener('input', debounceSizeChange);
     customHeightInput.addEventListener('input', debounceSizeChange);
 
+    // Decal Preview Toggle (the requested feature)
+    document.getElementById('decalPreviewToggle').addEventListener('change', function() {
+        decalPreviewEnabled = this.checked;
+        document.getElementById('fullPreviewBlock').classList.toggle('hidden', decalPreviewEnabled);
+        document.getElementById('decalPreviewBlock').classList.toggle('hidden', !decalPreviewEnabled);
+        if (decalPreviewEnabled) {
+            decalCtx.imageSmoothingEnabled = true;
+            decalCtx.imageSmoothingQuality = 'high';
+            decalCtx.clearRect(0, 0, 300, 300);
+            decalCtx.drawImage(canvas, 0, 0, 300, 300);
+        }
+        renderComposite();
+    });
+
     window.setBg = function(preset) {
-        document.getElementById('canvasWrapper').className = `canvas-container bg-${preset}`;
+        const wrappers = [
+            document.getElementById('canvasWrapper'),
+            document.querySelector('#decalPreviewBlock .canvas-container')
+        ];
+        wrappers.forEach(w => {
+            if (w) w.className = `canvas-container bg-${preset}`;
+        });
         document.querySelectorAll('[data-preset]').forEach(btn => {
             const active = btn.getAttribute('data-preset') === preset;
             btn.classList.toggle('bg-gray-700', active);
