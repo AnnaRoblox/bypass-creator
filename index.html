@@ -384,33 +384,45 @@
 
     // ─── Custom Size Helper ───
     function applyMainImageSize() {
-        if (!mainSourceImage) return;
+    if (!mainSourceImage) return;
 
-        const toggle = document.getElementById('customSizeToggle').checked;
-        let w = mainSourceImage.width;
-        let h = mainSourceImage.height;
+    const toggle = document.getElementById('customSizeToggle').checked;
+    let w, h;
 
-        if (toggle) {
-            const cw = parseInt(document.getElementById('customWidth').value);
-            const ch = parseInt(document.getElementById('customHeight').value);
-            if (!isNaN(cw) && cw >= 64) w = cw;
-            if (!isNaN(ch) && ch >= 64) h = ch;
-        }
-
-        currentWidth = canvas.width = Math.max(64, w);
-        currentHeight = canvas.height = Math.max(64, h);
-
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
-        ctx.clearRect(0, 0, currentWidth, currentHeight);
-        ctx.drawImage(mainSourceImage, 0, 0, currentWidth, currentHeight);
-
-        originalImageData = ctx.getImageData(0, 0, currentWidth, currentHeight);
-
-        if (baitOriginalImage) updateBaitData();
-        processPipeline();
-        downloadBtn.disabled = false;
+    if (toggle) {
+        // Custom size → use values from inputs (with minimum protection)
+        const cw = parseInt(document.getElementById('customWidth').value) || mainSourceImage.width;
+        const ch = parseInt(document.getElementById('customHeight').value) || mainSourceImage.height;
+        w = Math.max(64, cw);
+        h = Math.max(64, ch);
+    } else {
+        
+        // When custom size is OFF → use original image dimensions
+        w = mainSourceImage.width;
+        h = mainSourceImage.height;
     }
+
+    // Prevent extremely tiny or broken values
+    w = Math.max(64, Math.min(4096, w));
+    h = Math.max(64, Math.min(4096, h));
+
+    currentWidth  = canvas.width  = w;
+    currentHeight = canvas.height = h;
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.clearRect(0, 0, currentWidth, currentHeight);
+
+    // Draw original image at its native size (no forced scaling)
+    ctx.drawImage(mainSourceImage, 0, 0, w, h);
+
+    originalImageData = ctx.getImageData(0, 0, currentWidth, currentHeight);
+
+    if (baitOriginalImage) updateBaitData();
+    processPipeline();
+
+    downloadBtn.disabled = false;
+}
 
     // ─── File handling ───
     function handleFile(file, mode = 'main') {
