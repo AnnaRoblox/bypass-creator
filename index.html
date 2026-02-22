@@ -24,6 +24,18 @@
             -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%;
             background: #60a5fa; cursor: pointer; border: 2px solid #1e40af;
         }
+        /* style for exclusion inline editor */
+        .excl-edit-input {
+            background-color: rgb(30 58 138);
+            color: rgb(191 219 254);
+            border: 1px solid rgb(96 165 250);
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 0.25rem;
+            width: 88px;
+            text-align: center;
+            outline: none;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-8 px-4 font-sans">
@@ -54,12 +66,12 @@
                 <div id="customSizeOptions" class="hidden grid grid-cols-2 gap-6">
                     <div class="space-y-2">
                         <label class="block text-xs text-gray-400">Width (px)</label>
-                        <input type="number" id="customWidth" value="512" min="0" max="4096" step="1"
+                        <input type="number" id="customWidth" value="300" min="0" max="4096" step="1"
                                class="w-full bg-gray-800 border border-gray-700 focus:border-amber-400 rounded-lg px-4 py-2.5 text-white font-mono">
                     </div>
                     <div class="space-y-2">
                         <label class="block text-xs text-gray-400">Height (px)</label>
-                        <input type="number" id="customHeight" value="512" min="0" max="4096" step="1"
+                        <input type="number" id="customHeight" value="300" min="0" max="4096" step="1"
                                class="w-full bg-gray-800 border border-gray-700 focus:border-amber-400 rounded-lg px-4 py-2.5 text-white font-mono">
                     </div>
                 </div>
@@ -202,14 +214,17 @@
             <div class="bg-gray-900/40 p-4 rounded-lg border border-gray-700/50 space-y-3">
                 <div class="flex justify-between items-center">
                     <h3 class="font-semibold text-blue-300">Exclusion Value</h3>
-                    <span id="exclValDisplay" class="text-xs bg-blue-900 text-blue-200 px-2 py-1 rounded">112, 112, 112</span>
+                    <!-- Updated: clickable + hover -->
+                    <span id="exclValDisplay" 
+                          class="text-xs bg-blue-900 text-blue-200 px-2 py-1 rounded cursor-pointer hover:bg-blue-800 active:bg-blue-700 transition-colors"
+                          title="Click to manually enter any value (0-255)">112, 112, 112</span>
                 </div>
                 <input type="range" id="exclSlider" min="0" max="255" value="112" class="w-full">
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-3">
                     <div class="flex justify-between"><h3 class="font-semibold text-white">Top Layer</h3><span id="topVal">100%</span></div>
-                    <input type="range" id="topOpacity" min="0" max="100" value="100" class="w-full">
+                    <input type="range" id="topOpacity" min="0" max="20" value="100" class="w-full">
                 </div>
                 <div class="space-y-3">
                     <div class="flex justify-between"><h3 class="font-semibold text-white">Bottom Layer</h3><span id="btmVal">100%</span></div>
@@ -218,7 +233,6 @@
             </div>
             <div id="status" class="hidden text-center text-yellow-400 animate-pulse">Processing...</div>
         </div>
-
         <!-- Canvas Preview Area -->
         <div class="space-y-6">
             <!-- Full resolution preview -->
@@ -227,15 +241,13 @@
                     <canvas id="mainCanvas" class="max-w-full h-auto block"></canvas>
                 </div>
             </div>
-
-            <!--  Roblox Decal Preview -->
+            <!-- Roblox Decal Preview -->
             <div id="decalPreviewBlock" class="hidden flex justify-center bg-gray-900 p-4 rounded-xl border border-gray-800 overflow-auto">
                 <div class="canvas-container bg-transparent-grid relative">
                     <canvas id="decalCanvas" width="300" height="300" class="block"></canvas>
                     <div class="absolute top-2 right-2 bg-amber-500 text-[10px] font-mono font-bold text-black px-2 py-0.5 rounded shadow">300×300</div>
                 </div>
             </div>
-
             <!-- Toggle below the canvas -->
             <div class="flex justify-center">
                 <label class="flex items-center gap-3 bg-gray-800 hover:bg-gray-700 px-6 py-3 rounded-2xl border border-gray-700 cursor-pointer transition-all">
@@ -246,7 +258,6 @@
                     </div>
                 </label>
             </div>
-
             <!-- Preview Background -->
             <div class="flex flex-col items-center space-y-3">
                 <span class="text-sm text-gray-400">Preview Background</span>
@@ -257,13 +268,11 @@
                     <button onclick="setBg('preset-grey')" data-preset="preset-grey" class="px-4 py-2 rounded-md text-gray-300">Grey</button>
                 </div>
             </div>
-
             <div class="text-center">
                 <button id="downloadBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg disabled:opacity-50" disabled>Download</button>
             </div>
         </div>
     </div>
-
     <script>
     // ─── Core functions ───
     function minimumAlpha(Cc, Cb) {
@@ -385,7 +394,6 @@
         }
         return data;
     }
-
     // ─── State ───
     let originalImageData = null;
     let topLayerProcessed = null;
@@ -397,16 +405,13 @@
     let currentWidth = 0;
     let currentHeight = 0;
     let decalPreviewEnabled = false;
-
     const canvas = document.getElementById('mainCanvas');
     const ctx = canvas.getContext('2d');
     const statusEl = document.getElementById('status');
     const downloadBtn = document.getElementById('downloadBtn');
-
     // Decal preview
     const decalCanvas = document.getElementById('decalCanvas');
     const decalCtx = decalCanvas.getContext('2d');
-
     // ─── Custom Size Helper ───
     function applyMainImageSize() {
         if (!mainSourceImage) return;
@@ -434,7 +439,6 @@
         processPipeline();
         downloadBtn.disabled = false;
     }
-
     // ─── File handling ───
     function handleFile(file, mode = 'main') {
         if (!file || !file.type.startsWith('image/')) return;
@@ -458,7 +462,6 @@
         };
         reader.readAsDataURL(file);
     }
-
     function updateBaitData() {
         if (!baitOriginalImage || currentWidth <= 0 || currentHeight <= 0) {
             baitImageData = null;
@@ -482,7 +485,6 @@
         }
         renderComposite();
     }
-
     // ─── Processing pipeline ───
     function processPipeline() {
         if (!originalImageData) return;
@@ -501,7 +503,6 @@
             renderComposite();
         }, 10);
     }
-
     // ─── Render ───
     function renderComposite() {
         ctx.clearRect(0, 0, currentWidth, currentHeight);
@@ -601,7 +602,6 @@
             ctx.fillText('Render failed - try re-uploading', 20, currentHeight / 2);
         }
         ctx.globalAlpha = 1;
-
         // Update 300x300 preview if enabled (shows resized quality loss)
         if (decalPreviewEnabled) {
             decalCtx.imageSmoothingEnabled = true;
@@ -610,7 +610,6 @@
             decalCtx.drawImage(canvas, 0, 0, 300, 300);
         }
     }
-
     // ─── Event listeners ───
     document.getElementById('dropZoneMain').addEventListener('click', () => document.getElementById('imageInput').click());
     document.getElementById('imageInput').addEventListener('change', e => {
@@ -624,7 +623,6 @@
     document.getElementById('tagInput').addEventListener('change', e => {
         if (e.target.files?.[0]) handleFile(e.target.files[0], 'tag');
     });
-
     function setupDropZone(zoneId, colorClass) {
         const zone = document.getElementById(zoneId);
         zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add(colorClass); });
@@ -641,7 +639,6 @@
     setupDropZone('dropZoneMain', 'border-blue-500');
     setupDropZone('dropZoneBait', 'border-purple-500');
     setupDropZone('dropZoneTag', 'border-emerald-500');
-
     document.addEventListener('paste', e => {
         const file = [...(e.clipboardData?.items || [])].find(item => item.type.startsWith('image/'))?.getAsFile();
         if (!file) return;
@@ -650,7 +647,6 @@
         else if (active?.closest('#dropZoneBait')) handleFile(file, 'bait');
         else handleFile(file, 'main');
     });
-
     document.getElementById('topOpacity').addEventListener('input', e => {
         document.getElementById('topVal').textContent = e.target.value + '%';
         renderComposite();
@@ -727,7 +723,6 @@
     }
     customWidthInput.addEventListener('input', debounceSizeChange);
     customHeightInput.addEventListener('input', debounceSizeChange);
-
     // Decal Preview Toggle (the requested feature)
     document.getElementById('decalPreviewToggle').addEventListener('change', function() {
         decalPreviewEnabled = this.checked;
@@ -741,7 +736,6 @@
         }
         renderComposite();
     });
-
     window.setBg = function(preset) {
         const wrappers = [
             document.getElementById('canvasWrapper'),
@@ -757,7 +751,6 @@
             btn.classList.toggle('text-gray-300', !active);
         });
     };
-
     document.getElementById('downloadBtn').addEventListener('click', () => {
         if (currentWidth === 0) return;
         const link = document.createElement('a');
@@ -766,7 +759,55 @@
         link.click();
     });
 
+    // ─── NEW: Clickable exclusion value (inline edit) ───
+    function makeExclusionEditable() {
+        const display = document.getElementById('exclValDisplay');
+        const slider = document.getElementById('exclSlider');
+
+        display.addEventListener('click', () => {
+            // Prevent double-click while editing
+            if (display.querySelector('input')) return;
+
+            const currentVal = slider.value;
+
+            // Replace text with input
+            display.innerHTML = `<input type="number" id="exclTempInput" min="0" max="255" value="${currentVal}" class="excl-edit-input">`;
+
+            const input = document.getElementById('exclTempInput');
+            input.focus();
+            input.select();
+
+            const finishEdit = (cancel = false) => {
+                let newVal = cancel ? currentVal : parseInt(input.value);
+                if (isNaN(newVal) || newVal < 0 || newVal > 255) newVal = currentVal;
+
+                // Update slider (this will also update display via existing listener + trigger processing)
+                slider.value = newVal;
+                slider.dispatchEvent(new Event('input'));   // re-uses original slider logic
+
+                // Clean up
+                display.innerHTML = `${newVal}, ${newVal}, ${newVal}`;
+            };
+
+            // Blur = save
+            input.addEventListener('blur', () => finishEdit(false), { once: true });
+
+            // Keyboard support
+            input.addEventListener('keydown', e => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    finishEdit(false);
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    finishEdit(true);
+                }
+            }, { once: true });
+        });
+    }
+
+    // Initialize everything
     setBg('transparent-grid');
+    makeExclusionEditable();   
     </script>
 </body>
 </html>
