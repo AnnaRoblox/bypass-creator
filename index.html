@@ -24,7 +24,6 @@
             -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%;
             background: #60a5fa; cursor: pointer; border: 2px solid #1e40af;
         }
-        /* style for exclusion inline editor */
         .excl-edit-input {
             background-color: rgb(30 58 138);
             color: rgb(191 219 254);
@@ -212,16 +211,34 @@
                 </div>
             </div>
             <!-- Exclusion & Sliders -->
-            <div class="bg-gray-900/40 p-4 rounded-lg border border-gray-700/50 space-y-3">
+            <div class="bg-gray-900/40 p-4 rounded-lg border border-gray-700/50 space-y-4">
                 <div class="flex justify-between items-center">
                     <h3 class="font-semibold text-blue-300">Exclusion Value</h3>
-                    <!-- Updated: clickable + hover -->
-                    <span id="exclValDisplay" 
+                    <span id="exclValDisplay"
                           class="text-xs bg-blue-900 text-blue-200 px-2 py-1 rounded cursor-pointer hover:bg-blue-800 active:bg-blue-700 transition-colors"
                           title="Click to manually enter any value (0-255)">112, 112, 112</span>
                 </div>
                 <input type="range" id="exclSlider" min="0" max="255" value="112" class="w-full">
+
+                <!-- Exclusion Mode -->
+                <div class="pt-3 border-t border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-300">Exclusion Mode</span>
+                        <div class="flex gap-6 text-sm">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="exclMode" value="black" checked class="accent-blue-500">
+                                <span>On Black</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="exclMode" value="white" class="accent-blue-500">
+                                <span>On White</span>
+                            </label>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-gray-500 mt-1 italic">On Black = visible on black On White = visible on white</p>
+                </div>
             </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-3">
                     <div class="flex justify-between"><h3 class="font-semibold text-white">Top Layer</h3><span id="topVal">20%</span></div>
@@ -236,20 +253,17 @@
         </div>
         <!-- Canvas Preview Area -->
         <div class="space-y-6">
-            <!-- Full resolution preview -->
             <div id="fullPreviewBlock" class="flex justify-center bg-gray-900 p-4 rounded-xl border border-gray-800 overflow-auto">
                 <div id="canvasWrapper" class="canvas-container bg-transparent-grid">
                     <canvas id="mainCanvas" class="max-w-full h-auto block"></canvas>
                 </div>
             </div>
-            <!-- Roblox Decal Preview -->
             <div id="decalPreviewBlock" class="hidden flex justify-center bg-gray-900 p-4 rounded-xl border border-gray-800 overflow-auto">
                 <div class="canvas-container bg-transparent-grid relative">
                     <canvas id="decalCanvas" width="300" height="300" class="block"></canvas>
                     <div class="absolute top-2 right-2 bg-amber-500 text-[10px] font-mono font-bold text-black px-2 py-0.5 rounded shadow">300×300</div>
                 </div>
             </div>
-            <!-- Toggle below the canvas -->
             <div class="flex justify-center">
                 <label class="flex items-center gap-3 bg-gray-800 hover:bg-gray-700 px-6 py-3 rounded-2xl border border-gray-700 cursor-pointer transition-all">
                     <input type="checkbox" id="decalPreviewToggle" class="w-5 h-5 accent-blue-500">
@@ -259,7 +273,6 @@
                     </div>
                 </label>
             </div>
-            <!-- Preview Background -->
             <div class="flex flex-col items-center space-y-3">
                 <span class="text-sm text-gray-400">Preview Background</span>
                 <div class="flex space-x-2 bg-gray-800 p-1 rounded-lg border border-gray-700">
@@ -329,6 +342,11 @@
                     dstG = (srcG * blendG) / 255;
                     dstB = (srcB * blendB) / 255;
                     break;
+                case 'negation':
+                    dstR = 255 - Math.abs(255 - srcR - blendR);
+                    dstG = 255 - Math.abs(255 - srcG - blendG);
+                    dstB = 255 - Math.abs(255 - srcB - blendB);
+                    break;
                 default:
                     dstR = srcR; dstG = srcG; dstB = srcB;
             }
@@ -355,7 +373,6 @@
         }
         return output;
     }
-    // ─── Bait processing ───
     function processBaitImage(rawData, w, h, clearEnabled, clearColor, createEnabled) {
         let data = new Uint8ClampedArray(rawData);
         if (createEnabled) {
@@ -410,9 +427,9 @@
     const ctx = canvas.getContext('2d');
     const statusEl = document.getElementById('status');
     const downloadBtn = document.getElementById('downloadBtn');
-    // Decal preview
     const decalCanvas = document.getElementById('decalCanvas');
     const decalCtx = decalCanvas.getContext('2d');
+
     // ─── Custom Size Helper ───
     function applyMainImageSize() {
         if (!mainSourceImage) return;
@@ -440,6 +457,7 @@
         processPipeline();
         downloadBtn.disabled = false;
     }
+
     // ─── File handling ───
     function handleFile(file, mode = 'main') {
         if (!file || !file.type.startsWith('image/')) return;
@@ -486,24 +504,46 @@
         }
         renderComposite();
     }
-    // ─── Processing pipeline ───
+
+    // ─── Processing pipeline (double clear steps for BOTH modes) ───
     function processPipeline() {
         if (!originalImageData) return;
         statusEl.classList.remove('hidden');
         setTimeout(() => {
             const v = parseInt(document.getElementById('exclSlider').value);
-            let t1 = applyClearColor(currentWidth, currentHeight, originalImageData.data, 255,255,255);
-            let t2 = applyBlend(t1, v,v,v, 'exclusion');
-            let t3 = applyClearColor(currentWidth, currentHeight, t2, 255,255,255);
-            topLayerProcessed = applyBlend(t3, 255,255,255, 'average');
-            let b1 = applyClearColor(currentWidth, currentHeight, originalImageData.data, 0,0,0);
-            let b2 = applyBlend(b1, v,v,v, 'exclusion');
-            let b3 = applyClearColor(currentWidth, currentHeight, b2, 0,0,0);
-            btmLayerProcessed = applyBlend(b3, 128,128,128, 'multiply');
+            const exclMode = document.querySelector('input[name="exclMode"]:checked')?.value || 'black';
+
+            if (exclMode === 'black') {
+                // === ON BLACK (clear on each layer) ===
+                let t1 = applyClearColor(currentWidth, currentHeight, originalImageData.data, 255,255,255);
+                let t2 = applyBlend(t1, v,v,v, 'exclusion');
+                let t3 = applyClearColor(currentWidth, currentHeight, t2, 255,255,255);
+                topLayerProcessed = applyBlend(t3, 255,255,255, 'average');
+
+                let b1 = applyClearColor(currentWidth, currentHeight, originalImageData.data, 0,0,0);
+                let b2 = applyBlend(b1, v,v,v, 'exclusion');
+                let b3 = applyClearColor(currentWidth, currentHeight, b2, 0,0,0);
+                btmLayerProcessed = applyBlend(b3, 128,128,128, 'multiply');
+            } else {
+                // === ON WHITE (swapped + clear on each layer) ===
+                // Top layer: clear black → exclusion → clear black → average black
+                let t1 = applyClearColor(currentWidth, currentHeight, originalImageData.data, 0,0,0);
+                let t2 = applyBlend(t1, v,v,v, 'exclusion');
+                let t3 = applyClearColor(currentWidth, currentHeight, t2, 0,0,0);
+                topLayerProcessed = applyBlend(t3, 0,0,0, 'average');
+
+                // Bottom layer: clear white → exclusion → clear white → negation 128
+                let b1 = applyClearColor(currentWidth, currentHeight, originalImageData.data, 255,255,255);
+                let b2 = applyBlend(b1, v,v,v, 'exclusion');
+                let b3 = applyClearColor(currentWidth, currentHeight, b2, 255,255,255);
+                btmLayerProcessed = applyBlend(b3, 128,128,128, 'negation');
+            }
+
             statusEl.classList.add('hidden');
             renderComposite();
         }, 10);
     }
+
     // ─── Render ───
     function renderComposite() {
         ctx.clearRect(0, 0, currentWidth, currentHeight);
@@ -584,7 +624,7 @@
                         case 'top-left': drawX = 0; drawY = 0; break;
                         case 'top-right': drawX = currentWidth - scaledW; drawY = 0; break;
                         case 'bottom-left': drawX = 0; drawY = currentHeight - scaledH; break;
-                        case 'bottom-right':drawX = currentWidth - scaledW; drawY = currentHeight - scaledH; break;
+                        case 'bottom-right': drawX = currentWidth - scaledW; drawY = currentHeight - scaledH; break;
                     }
                 }
                 drawX = Math.max(0, Math.min(drawX, currentWidth - scaledW));
@@ -603,7 +643,7 @@
             ctx.fillText('Render failed - try re-uploading', 20, currentHeight / 2);
         }
         ctx.globalAlpha = 1;
-        // Update 300x300 preview if enabled (shows resized quality loss)
+
         if (decalPreviewEnabled) {
             decalCtx.imageSmoothingEnabled = true;
             decalCtx.imageSmoothingQuality = 'high';
@@ -611,6 +651,7 @@
             decalCtx.drawImage(canvas, 0, 0, 300, 300);
         }
     }
+
     // ─── Event listeners ───
     document.getElementById('dropZoneMain').addEventListener('click', () => document.getElementById('imageInput').click());
     document.getElementById('imageInput').addEventListener('change', e => {
@@ -624,6 +665,7 @@
     document.getElementById('tagInput').addEventListener('change', e => {
         if (e.target.files?.[0]) handleFile(e.target.files[0], 'tag');
     });
+
     function setupDropZone(zoneId, colorClass) {
         const zone = document.getElementById(zoneId);
         zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add(colorClass); });
@@ -640,6 +682,7 @@
     setupDropZone('dropZoneMain', 'border-blue-500');
     setupDropZone('dropZoneBait', 'border-purple-500');
     setupDropZone('dropZoneTag', 'border-emerald-500');
+
     document.addEventListener('paste', e => {
         const file = [...(e.clipboardData?.items || [])].find(item => item.type.startsWith('image/'))?.getAsFile();
         if (!file) return;
@@ -648,23 +691,21 @@
         else if (active?.closest('#dropZoneBait')) handleFile(file, 'bait');
         else handleFile(file, 'main');
     });
-    document.getElementById('topOpacity').addEventListener('input', e => {
-        document.getElementById('topVal').textContent = e.target.value + '%';
-        renderComposite();
-    });
-    document.getElementById('btmOpacity').addEventListener('input', e => {
-        document.getElementById('btmVal').textContent = e.target.value + '%';
-        renderComposite();
-    });
-    document.getElementById('baitOpacity').addEventListener('input', e => {
-        document.getElementById('baitOpacityVal').textContent = e.target.value + '%';
-        renderComposite();
-    });
+
+    document.getElementById('topOpacity').addEventListener('input', e => { document.getElementById('topVal').textContent = e.target.value + '%'; renderComposite(); });
+    document.getElementById('btmOpacity').addEventListener('input', e => { document.getElementById('btmVal').textContent = e.target.value + '%'; renderComposite(); });
+    document.getElementById('baitOpacity').addEventListener('input', e => { document.getElementById('baitOpacityVal').textContent = e.target.value + '%'; renderComposite(); });
+
     document.getElementById('exclSlider').addEventListener('input', e => {
         document.getElementById('exclValDisplay').textContent = `${e.target.value}, ${e.target.value}, ${e.target.value}`;
         clearTimeout(window.procTimer);
         window.procTimer = setTimeout(processPipeline, 150);
     });
+
+    document.querySelectorAll('input[name="exclMode"]').forEach(radio => {
+        radio.addEventListener('change', processPipeline);
+    });
+
     document.querySelectorAll('input[name="baitMode"]').forEach(radio => {
         radio.addEventListener('change', () => {
             document.getElementById('newBaitOptions').classList.toggle('hidden', radio.value !== 'new');
@@ -672,6 +713,7 @@
         });
     });
     document.querySelectorAll('input[name="newBaitBg"]').forEach(radio => radio.addEventListener('change', renderComposite));
+
     document.getElementById('clearBaitToggle').addEventListener('change', e => {
         document.getElementById('clearBaitOptions').classList.toggle('hidden', !e.target.checked);
         if (baitOriginalImage) updateBaitData();
@@ -683,31 +725,19 @@
         document.getElementById('createBaitNote').classList.toggle('hidden', !e.target.checked);
         if (baitOriginalImage) updateBaitData();
     });
-    document.getElementById('tagSize').addEventListener('input', e => {
-        document.getElementById('tagSizeVal').textContent = e.target.value + '%';
-        renderComposite();
-    });
-    document.getElementById('tagOpacity').addEventListener('input', e => {
-        document.getElementById('tagOpacityVal').textContent = e.target.value + '%';
-        renderComposite();
-    });
+
+    document.getElementById('tagSize').addEventListener('input', e => { document.getElementById('tagSizeVal').textContent = e.target.value + '%'; renderComposite(); });
+    document.getElementById('tagOpacity').addEventListener('input', e => { document.getElementById('tagOpacityVal').textContent = e.target.value + '%'; renderComposite(); });
     document.querySelectorAll('input[name="tagPosition"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-            if (!document.getElementById('customPosToggle').checked) renderComposite();
-        });
+        radio.addEventListener('change', () => { if (!document.getElementById('customPosToggle').checked) renderComposite(); });
     });
     document.getElementById('customPosToggle').addEventListener('change', e => {
         document.getElementById('customPosOptions').classList.toggle('hidden', !e.target.checked);
         renderComposite();
     });
-    document.getElementById('tagX').addEventListener('input', e => {
-        document.getElementById('tagXVal').textContent = e.target.value + '%';
-        renderComposite();
-    });
-    document.getElementById('tagY').addEventListener('input', e => {
-        document.getElementById('tagYVal').textContent = e.target.value + '%';
-        renderComposite();
-    });
+    document.getElementById('tagX').addEventListener('input', e => { document.getElementById('tagXVal').textContent = e.target.value + '%'; renderComposite(); });
+    document.getElementById('tagY').addEventListener('input', e => { document.getElementById('tagYVal').textContent = e.target.value + '%'; renderComposite(); });
+
     const customSizeToggle = document.getElementById('customSizeToggle');
     const customSizeOptions = document.getElementById('customSizeOptions');
     const customWidthInput = document.getElementById('customWidth');
@@ -724,27 +754,20 @@
     }
     customWidthInput.addEventListener('input', debounceSizeChange);
     customHeightInput.addEventListener('input', debounceSizeChange);
-    // Decal Preview Toggle (the requested feature)
+
     document.getElementById('decalPreviewToggle').addEventListener('change', function() {
         decalPreviewEnabled = this.checked;
         document.getElementById('fullPreviewBlock').classList.toggle('hidden', decalPreviewEnabled);
         document.getElementById('decalPreviewBlock').classList.toggle('hidden', !decalPreviewEnabled);
-        if (decalPreviewEnabled) {
-            decalCtx.imageSmoothingEnabled = true;
-            decalCtx.imageSmoothingQuality = 'high';
-            decalCtx.clearRect(0, 0, 300, 300);
-            decalCtx.drawImage(canvas, 0, 0, 300, 300);
-        }
-        renderComposite();
+        if (decalPreviewEnabled) renderComposite();
     });
+
     window.setBg = function(preset) {
         const wrappers = [
             document.getElementById('canvasWrapper'),
             document.querySelector('#decalPreviewBlock .canvas-container')
         ];
-        wrappers.forEach(w => {
-            if (w) w.className = `canvas-container bg-${preset}`;
-        });
+        wrappers.forEach(w => { if (w) w.className = `canvas-container bg-${preset}`; });
         document.querySelectorAll('[data-preset]').forEach(btn => {
             const active = btn.getAttribute('data-preset') === preset;
             btn.classList.toggle('bg-gray-700', active);
@@ -752,6 +775,7 @@
             btn.classList.toggle('text-gray-300', !active);
         });
     };
+
     document.getElementById('downloadBtn').addEventListener('click', () => {
         if (currentWidth === 0) return;
         const link = document.createElement('a');
@@ -760,55 +784,33 @@
         link.click();
     });
 
-    // ─── NEW: Clickable exclusion value (inline edit) ───
     function makeExclusionEditable() {
         const display = document.getElementById('exclValDisplay');
         const slider = document.getElementById('exclSlider');
-
         display.addEventListener('click', () => {
-            // Prevent double-click while editing
             if (display.querySelector('input')) return;
-
             const currentVal = slider.value;
-
-            // Replace text with input
             display.innerHTML = `<input type="number" id="exclTempInput" min="0" max="255" value="${currentVal}" class="excl-edit-input">`;
-
             const input = document.getElementById('exclTempInput');
-            input.focus();
-            input.select();
-
+            input.focus(); input.select();
             const finishEdit = (cancel = false) => {
                 let newVal = cancel ? currentVal : parseInt(input.value);
                 if (isNaN(newVal) || newVal < 0 || newVal > 255) newVal = currentVal;
-
-                // Update slider (this will also update display via existing listener + trigger processing)
                 slider.value = newVal;
-                slider.dispatchEvent(new Event('input'));   // re-uses original slider logic
-
-                // Clean up
+                slider.dispatchEvent(new Event('input'));
                 display.innerHTML = `${newVal}, ${newVal}, ${newVal}`;
             };
-
-            // Blur = save
             input.addEventListener('blur', () => finishEdit(false), { once: true });
-
-            // Keyboard support
             input.addEventListener('keydown', e => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    finishEdit(false);
-                } else if (e.key === 'Escape') {
-                    e.preventDefault();
-                    finishEdit(true);
-                }
+                if (e.key === 'Enter') { e.preventDefault(); finishEdit(false); }
+                else if (e.key === 'Escape') { e.preventDefault(); finishEdit(true); }
             }, { once: true });
         });
     }
 
-    // Initialize everything
+    // Initialize
     setBg('transparent-grid');
-    makeExclusionEditable();   
+    makeExclusionEditable();
     </script>
 </body>
 </html>
