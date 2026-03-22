@@ -46,7 +46,6 @@
              <p class="text-gray-400 text-sm">Thanks to <b><a href="https://discord.gg/GrySSdCmAR">Joshclark756</a></b> for help with the method</p>
         </div>
         <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-xl space-y-6">
-            <!-- Main Upload -->
             <div id="dropZoneMain" class="flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded-lg p-6 hover:border-blue-400 transition-colors cursor-pointer group">
                 <input type="file" id="imageInput" accept="image/*" class="hidden">
                 <div class="text-center pointer-events-none group-hover:scale-105 transition-transform duration-200">
@@ -56,7 +55,6 @@
                     <p class="text-sm text-gray-300">Main image — click / drag / paste</p>
                 </div>
             </div>
-            <!-- CUSTOM SIZE SECTION -->
             <div class="bg-gray-900/60 p-5 rounded-lg border border-gray-600 space-y-5">
                 <h3 class="font-semibold text-amber-300 text-lg">Output Size</h3>
                 <label class="flex items-center gap-3 text-sm cursor-pointer">
@@ -77,7 +75,6 @@
                 </div>
                 <p class="text-[10px] text-gray-500 italic">Common Roblox sizes: 512×512, 1024×1024, 2048×2048</p>
             </div>
-            <!-- Bait Section with new controls -->
             <div class="bg-gray-900/60 p-5 rounded-lg border border-gray-600 space-y-5">
                 <h3 class="font-semibold text-purple-300 text-lg">Bait Layer</h3>
                 <div id="dropZoneBait" class="flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded-lg p-5 hover:border-purple-400 transition-colors cursor-pointer group">
@@ -89,7 +86,6 @@
                         <p class="text-sm text-gray-300">Bait image (optional)</p>
                     </div>
                 </div>
-                <!-- Bait Mode & Options -->
                 <div class="flex flex-wrap gap-6 items-center justify-center">
                     <div class="space-x-4">
                         <label><input type="radio" name="baitMode" value="none" checked> None</label>
@@ -102,9 +98,7 @@
                         <label><input type="radio" name="newBaitBg" value="white"> White</label>
                     </div>
                 </div>
-                <!-- top bait Controls -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-3 border-t border-gray-700">
-                    <!-- Bait Opacity -->
                     <div class="space-y-2">
                         <div class="flex justify-between text-sm">
                             <span>Bait Opacity</span>
@@ -112,7 +106,6 @@
                         </div>
                         <input type="range" id="baitOpacity" min="0" max="100" value="100" class="w-full">
                     </div>
-                    <!-- Clear Bait -->
                     <div class="space-y-2">
                         <label class="flex items-center gap-2 text-sm">
                             <input type="checkbox" id="clearBaitToggle">
@@ -124,7 +117,6 @@
                             <label><input type="radio" name="clearBaitColor" value="white"> White</label>
                         </div>
                     </div>
-                    <!-- Create Bait -->
                     <div class="space-y-2 col-span-full">
                         <label class="flex items-center gap-2 text-sm">
                             <input type="checkbox" id="createBaitToggle">
@@ -136,7 +128,6 @@
                     </div>
                 </div>
             </div>
-            <!-- TAG SECTION -->
             <div class="bg-gray-900/60 p-5 rounded-lg border border-gray-600 space-y-5">
                 <h3 class="font-semibold text-emerald-300 text-lg">Tag Layer</h3>
                 <div id="dropZoneTag" class="flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded-lg p-5 hover:border-emerald-400 transition-colors cursor-pointer group">
@@ -148,7 +139,6 @@
                         <p class="text-sm text-gray-300">Tag image (optional) — placed on very top</p>
                     </div>
                 </div>
-                <!-- Tag Size -->
                 <div class="space-y-2">
                     <div class="flex justify-between text-sm">
                         <span>Tag Size (% of canvas width)</span>
@@ -156,7 +146,6 @@
                     </div>
                     <input type="range" id="tagSize" min="5" max="100" value="25" class="w-full">
                 </div>
-                <!-- Tag Opacity -->
                 <div class="space-y-2">
                     <div class="flex justify-between text-sm">
                         <span>Tag Opacity</span>
@@ -164,7 +153,6 @@
                     </div>
                     <input type="range" id="tagOpacity" min="0" max="100" value="100" class="w-full">
                 </div>
-                <!-- Position Presets -->
                 <div class="space-y-3">
                     <span class="text-sm text-gray-300 block">Position Preset</span>
                     <div class="grid grid-cols-2 gap-3">
@@ -186,7 +174,6 @@
                         </label>
                     </div>
                 </div>
-                <!-- Custom Position -->
                 <div class="space-y-2 pt-3 border-t border-gray-700">
                     <label class="flex items-center gap-2 text-sm cursor-pointer">
                         <input type="checkbox" id="customPosToggle" class="accent-emerald-400">
@@ -210,7 +197,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Exclusion & Sliders -->
             <div class="bg-gray-900/40 p-4 rounded-lg border border-gray-700/50 space-y-4">
                 <div class="flex justify-between items-center">
                     <h3 class="font-semibold text-blue-300">Exclusion Value</h3>
@@ -220,7 +206,6 @@
                 </div>
                 <input type="range" id="exclSlider" min="0" max="255" value="112" class="w-full">
 
-                <!-- Exclusion Mode -->
                 <div class="pt-3 border-t border-gray-700">
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-300">Exclusion Mode</span>
@@ -251,7 +236,6 @@
             </div>
             <div id="status" class="hidden text-center text-yellow-400 animate-pulse">Processing...</div>
         </div>
-        <!-- Canvas Preview Area -->
         <div class="space-y-6">
             <div id="fullPreviewBlock" class="flex justify-center bg-gray-900 p-4 rounded-xl border border-gray-800 overflow-auto">
                 <div id="canvasWrapper" class="canvas-container bg-transparent-grid">
@@ -375,6 +359,12 @@
     }
     function processBaitImage(rawData, w, h, clearEnabled, clearColor, createEnabled) {
         let data = new Uint8ClampedArray(rawData);
+        // Store original alpha to preserve transparency
+        const originalAlpha = new Uint8ClampedArray(w * h);
+        for (let i = 0; i < data.length; i += 4) {
+            originalAlpha[i / 4] = data[i + 3];
+        }
+
         if (createEnabled) {
             for (let i = 0; i < data.length; i += 4) {
                 let gray = Math.round(0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
@@ -400,14 +390,23 @@
                 }
             }
         }
+
         if (clearEnabled) {
             const target = clearColor === 'white' ? 255 : 0;
             for (let i = 0; i < data.length; i += 4) {
                 const gray = Math.round(0.299*data[i] + 0.587*data[i+1] + 0.114*data[i+2]);
                 const dist = Math.abs(gray - target);
-                const alpha = Math.max(0, 255 - dist * 2.5);
+                // Combine distance-based alpha with the original image alpha
+                const calculatedAlpha = Math.max(0, 255 - dist * 2.5);
+                const finalAlpha = Math.min(originalAlpha[i/4], calculatedAlpha);
+                
                 data[i] = data[i+1] = data[i+2] = gray;
-                data[i+3] = alpha;
+                data[i+3] = finalAlpha;
+            }
+        } else {
+            // If not clearing, simply re-apply the original alpha to the processed RGB
+            for (let i = 0; i < data.length; i += 4) {
+                data[i + 3] = originalAlpha[i / 4];
             }
         }
         return data;
